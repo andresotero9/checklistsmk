@@ -31,16 +31,22 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-data-jpa</artifactId>
 		</dependency>
-		
+
 		<!-- BANCO DE DADOS H2 -->
 		<dependency>
 			<groupId>com.h2database</groupId>
 			<artifactId>h2</artifactId>
 			<!-- RUNTIME POIS EXECUTA EM TEMPO DE EXECUÇÃO -->
+<!-- 			<scope>runtime</scope> -->
+		</dependency>
+
+		<dependency>
+			<groupId>org.flywaydb</groupId>
+			<artifactId>flyway-core</artifactId>
+			<!-- RUNTIME POIS EXECUTA EM TEMPO DE EXECUÇÃO -->
 			<scope>runtime</scope>
 		</dependency>
-		
-		
+
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-tomcat</artifactId>
