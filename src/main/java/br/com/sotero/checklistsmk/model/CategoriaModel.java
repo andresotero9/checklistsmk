@@ -15,6 +15,13 @@ public class CategoriaModel implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
+	public CategoriaModel() {
+	}
+
+	public CategoriaModel(String nmeCategoria) {
+		this.nmeCategoria = nmeCategoria;
+	}
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "ID_CATEGORIA")

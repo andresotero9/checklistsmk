@@ -4,6 +4,6 @@ import org.springframework.data.repository.CrudRepository;
 
 import br.com.sotero.checklistsmk.model.CategoriaModel;
 
-public interface CategoriaRepository extends CrudRepository<CategoriaModel, Integer> {
+public interface CategoriaRepository extends CrudRepository<CategoriaModel, Long> {
 
 }

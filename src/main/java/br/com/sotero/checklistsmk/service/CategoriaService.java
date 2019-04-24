@@ -82,7 +82,7 @@ public class CategoriaService {
 	 * @return
 	 */
 	@RequestMapping(value = "/categoria/{codigo}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public @ResponseBody Optional<CategoriaModel> buscar(@PathVariable("codigo") Integer codigo) {
+	public @ResponseBody Optional<CategoriaModel> buscar(@PathVariable("codigo") Long codigo) {
 
 		return this.categoriaRepository.findById(codigo);
 	}
@@ -94,7 +94,7 @@ public class CategoriaService {
 	 * @return
 	 */
 	@RequestMapping(value = "/categoria/{codigo}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public @ResponseBody ResponseModel excluir(@PathVariable("codigo") Integer codigo) {
+	public @ResponseBody ResponseModel excluir(@PathVariable("codigo") Long codigo) {
 
 		Optional<CategoriaModel> categoriaModel = categoriaRepository.findById(codigo);
 
