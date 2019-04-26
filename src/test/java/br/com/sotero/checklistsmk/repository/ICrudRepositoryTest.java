@@ -1,27 +1,25 @@
 package br.com.sotero.checklistsmk.repository;
 
-import java.util.Optional;
+interface ICrudRepositoryTest<T, ID> {
 
-public interface ICrudRepositoryTest<T, ID> {
-	<S extends T> S testSave(S entity);
+	void testSave();
 
-	<S extends T> Iterable<S> testSaveAll(Iterable<S> entities);
+	void testSaveAll();
 
-	Optional<T> testFindById(ID id);
+	void testFindById();
 
-	boolean testExistsById(ID id);
+	void testExistsById();
 
-	Iterable<T> testFindAll();
+	void testFindAll();
 
-	Iterable<T> testFindAllById(Iterable<ID> ids);
+	void testFindAllById();
 
-	long testCount();
+	void testCount();
 
-	void testDeleteById(ID id);
+	void testDeleteById();
 
-	void testDelete(T entity);
-
-	void testDeleteAll(Iterable<? extends T> entities);
+	void testDelete();
 
 	void testDeleteAll();
+
 }

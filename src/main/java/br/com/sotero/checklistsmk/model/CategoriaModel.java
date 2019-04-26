@@ -9,8 +9,8 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
-@Table(name = "CATEGORIA")
 @Entity
+@Table(name = "CATEGORIA")
 public class CategoriaModel implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -22,19 +22,24 @@ public class CategoriaModel implements Serializable {
 		this.nmeCategoria = nmeCategoria;
 	}
 
+	public CategoriaModel(Long idCategoria, String nmeCategoria) {
+		this.idCategoria = idCategoria;
+		this.nmeCategoria = nmeCategoria;
+	}
+
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "ID_CATEGORIA")
-	private Integer idCategoria;
+	private Long idCategoria;
 
-	@Column(name = "NME_CATEGORIA")
+	@Column(name = "NME_CATEGORIA", nullable = false, unique = true)
 	private String nmeCategoria;
 
-	public Integer getIdCategoria() {
+	public Long getIdCategoria() {
 		return idCategoria;
 	}
 
-	public void setIdCategoria(Integer idCategoria) {
+	public void setIdCategoria(Long idCategoria) {
 		this.idCategoria = idCategoria;
 	}
 

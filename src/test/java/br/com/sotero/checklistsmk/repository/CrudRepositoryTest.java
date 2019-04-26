@@ -1,20 +1,100 @@
 package br.com.sotero.checklistsmk.repository;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertNotNull;
 
+import java.util.List;
+
+import org.junit.After;
+import org.junit.Before;
+import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.CrudRepository;
 
-
-public class CrudRepositoryTest<T, ID> {
+public abstract class CrudRepositoryTest<T, ID> implements ICrudRepositoryTest<T, ID> {
 
 	@Autowired
-	private CrudRepository<T, ID> crudRepository;
+	protected CrudRepository<T, ID> crudRepository;
 
-	void testSave(T entity) {
-		T result = this.crudRepository.save(entity);
+	@Test
+	@Override
+	public void testSave() {
+		System.out.println("::: testSave() :::");
+		T result = this.crudRepository.save(entity());
 		assertNotNull(result);
 	}
 
+	@Test
+	@Override
+	public void testSaveAll() {
+		System.out.println("::: testSaveAll() :::");
+		List<T> saveAll = (List<T>) this.crudRepository.saveAll(listEntitySaveAll());
+		assertThat(saveAll);
+	}
+
+	@Override
+	public void testFindById() {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void testExistsById() {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void testFindAll() {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void testFindAllById() {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void testCount() {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void testDeleteById() {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void testDelete() {
+		// TODO Auto-generated method stub
+
+	}
+
+	@Override
+	public void testDeleteAll() {
+		// TODO Auto-generated method stub
+
+	}
+
+	abstract T entity();
+
+	abstract List<T> listEntity();
+
+	abstract List<T> listEntitySaveAll();
 	
+	@Before
+	public void before() {
+		System.out.println("::: before() :::");
+		this.crudRepository.saveAll(listEntity());
+	}
+	
+	@After
+	public void after() {
+		System.out.println("::: after() :::");
+		this.crudRepository.deleteAll();
+	}
 }
