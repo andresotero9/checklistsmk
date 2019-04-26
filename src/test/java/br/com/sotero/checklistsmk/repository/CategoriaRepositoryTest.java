@@ -7,6 +7,7 @@ import org.hibernate.exception.ConstraintViolationException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -49,8 +50,11 @@ public class CategoriaRepositoryTest extends CrudRepositoryTest<CategoriaModel, 
 		System.out.println("::: testSaveNmeCategoriaUnique() :::");
 		try {
 			crudRepository.save(new CategoriaModel("Bebidas"));
-		} catch (ConstraintViolationException e) {
+		} catch (DataIntegrityViolationException e) {
+			e.printStackTrace();
 		}
 		
 	}
+	
+	
 }

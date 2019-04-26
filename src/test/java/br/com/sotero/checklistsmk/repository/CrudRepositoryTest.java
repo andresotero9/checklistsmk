@@ -87,14 +87,14 @@ public abstract class CrudRepositoryTest<T, ID> implements ICrudRepositoryTest<T
 	abstract List<T> listEntitySaveAll();
 	
 	@Before
-	public void before() {
-		System.out.println("::: before() :::");
+	public void setUp() {
+		System.out.println("::: setUp() :::");
 		this.crudRepository.saveAll(listEntity());
 	}
 	
 	@After
-	public void after() {
-		System.out.println("::: after() :::");
+	public void tearDown() {
+		System.out.println("::: tearDown() :::");
 		this.crudRepository.deleteAll();
 	}
 }
