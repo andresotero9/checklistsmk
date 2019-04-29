@@ -1,7 +1,5 @@
 package br.com.sotero.checklistsmk.model;
 
-import java.io.Serializable;
-
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -9,11 +7,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
 
+@SuppressWarnings("serial")
 @Entity
 @Table(name = "CATEGORIA")
-public class CategoriaModel implements Serializable {
-
-	private static final long serialVersionUID = 1L;
+public class CategoriaModel extends Model<Long> {
 
 	public CategoriaModel() {
 	}
@@ -22,26 +19,23 @@ public class CategoriaModel implements Serializable {
 		this.nmeCategoria = nmeCategoria;
 	}
 
-	public CategoriaModel(Long idCategoria, String nmeCategoria) {
-		this.idCategoria = idCategoria;
+	public CategoriaModel(Long id, String nmeCategoria) {
+		this.id = id;
 		this.nmeCategoria = nmeCategoria;
 	}
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "ID_CATEGORIA")
-	private Long idCategoria;
+	public Long id;
+
+	@Override
+	public Long getId() {
+		return this.id;
+	}
 
 	@Column(name = "NME_CATEGORIA", nullable = false, unique = true)
 	private String nmeCategoria;
-
-	public Long getIdCategoria() {
-		return idCategoria;
-	}
-
-	public void setIdCategoria(Long idCategoria) {
-		this.idCategoria = idCategoria;
-	}
 
 	public String getNmeCategoria() {
 		return nmeCategoria;
@@ -50,4 +44,5 @@ public class CategoriaModel implements Serializable {
 	public void setNmeCategoria(String nmeCategoria) {
 		this.nmeCategoria = nmeCategoria;
 	}
+
 }

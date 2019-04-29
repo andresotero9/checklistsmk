@@ -6,6 +6,8 @@ interface ICrudRepositoryTest<T, ID> {
 
 	void testSaveAll();
 
+	void testSaveOnlyInstancedEntity();
+
 	void testFindById();
 
 	void testExistsById();

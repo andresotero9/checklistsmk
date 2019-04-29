@@ -1,9 +1,11 @@
 package br.com.sotero.checklistsmk.repository;
 
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import org.hibernate.exception.ConstraintViolationException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -25,19 +27,24 @@ public class CategoriaRepositoryTest extends CrudRepositoryTest<CategoriaModel, 
 	}
 
 	@Override
-	List<CategoriaModel> listEntity() {
+	public CategoriaModel entityOnlyInstanced() {
+		return new CategoriaModel();
+	}
+	
+	@Override
+	public List<CategoriaModel> listEntity() {
 		List<CategoriaModel> listCategoria = new ArrayList<CategoriaModel>();
 		listCategoria.add(new CategoriaModel("Bebidas"));
 		listCategoria.add(new CategoriaModel("Carnes"));
 		listCategoria.add(new CategoriaModel("Limpeza"));
-		listCategoria.add(new CategoriaModel("Perfumaria"));
-		listCategoria.add(new CategoriaModel("Bebês"));
-		listCategoria.add(new CategoriaModel("Peixaria"));
+		listCategoria.add(new CategoriaModel(11L, "Perfumaria"));
+		listCategoria.add(new CategoriaModel(12L, "Bebês"));
+		listCategoria.add(new CategoriaModel(13L, "Peixaria"));
 		return listCategoria;
 	}
 
 	@Override
-	List<CategoriaModel> listEntitySaveAll() {
+	public List<CategoriaModel> listEntitySaveAll() {
 		List<CategoriaModel> listCategoria = new ArrayList<CategoriaModel>();
 		listCategoria.add(new CategoriaModel("Automotivo"));
 		listCategoria.add(new CategoriaModel("Eletrônicos"));
@@ -50,11 +57,27 @@ public class CategoriaRepositoryTest extends CrudRepositoryTest<CategoriaModel, 
 		System.out.println("::: testSaveNmeCategoriaUnique() :::");
 		try {
 			crudRepository.save(new CategoriaModel("Bebidas"));
+			fail();
 		} catch (DataIntegrityViolationException e) {
-			e.printStackTrace();
+			assertTrue(true);
+		} catch (Exception e) {
+			fail();
 		}
-		
 	}
-	
-	
+
+	@Override
+	public Long existFindById() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public Long notExistFindById() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+
+
 }
