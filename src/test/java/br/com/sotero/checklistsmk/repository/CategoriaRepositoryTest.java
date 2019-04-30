@@ -30,16 +30,16 @@ public class CategoriaRepositoryTest extends CrudRepositoryTest<CategoriaModel, 
 	public CategoriaModel entityOnlyInstanced() {
 		return new CategoriaModel();
 	}
-	
+
 	@Override
 	public List<CategoriaModel> listEntity() {
 		List<CategoriaModel> listCategoria = new ArrayList<CategoriaModel>();
 		listCategoria.add(new CategoriaModel("Bebidas"));
 		listCategoria.add(new CategoriaModel("Carnes"));
 		listCategoria.add(new CategoriaModel("Limpeza"));
-		listCategoria.add(new CategoriaModel(11L, "Perfumaria"));
-		listCategoria.add(new CategoriaModel(12L, "Bebês"));
-		listCategoria.add(new CategoriaModel(13L, "Peixaria"));
+		listCategoria.add(new CategoriaModel("Perfumaria"));
+		listCategoria.add(new CategoriaModel("Bebês"));
+		listCategoria.add(new CategoriaModel("Peixaria"));
 		return listCategoria;
 	}
 
@@ -66,18 +66,8 @@ public class CategoriaRepositoryTest extends CrudRepositoryTest<CategoriaModel, 
 	}
 
 	@Override
-	public Long existFindById() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
 	public Long notExistFindById() {
-		// TODO Auto-generated method stub
-		return null;
+		return 9999L;
 	}
-
-
-
 
 }

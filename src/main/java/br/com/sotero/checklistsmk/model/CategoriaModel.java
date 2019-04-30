@@ -10,7 +10,7 @@ import javax.persistence.Table;
 @SuppressWarnings("serial")
 @Entity
 @Table(name = "CATEGORIA")
-public class CategoriaModel extends Model<Long> {
+public class CategoriaModel extends ClassEntity<Long> {
 
 	public CategoriaModel() {
 	}
@@ -19,23 +19,23 @@ public class CategoriaModel extends Model<Long> {
 		this.nmeCategoria = nmeCategoria;
 	}
 
-	public CategoriaModel(Long id, String nmeCategoria) {
-		this.id = id;
+	public CategoriaModel(Long idCategoria, String nmeCategoria) {
+		this.idCategoria = idCategoria;
 		this.nmeCategoria = nmeCategoria;
 	}
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "ID_CATEGORIA")
-	public Long id;
-
-	@Override
-	public Long getId() {
-		return this.id;
-	}
+	public Long idCategoria;
 
 	@Column(name = "NME_CATEGORIA", nullable = false, unique = true)
 	private String nmeCategoria;
+
+	@Override
+	public Long getId() {
+		return this.idCategoria;
+	}
 
 	public String getNmeCategoria() {
 		return nmeCategoria;

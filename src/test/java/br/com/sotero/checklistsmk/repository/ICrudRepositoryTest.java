@@ -10,7 +10,11 @@ interface ICrudRepositoryTest<T, ID> {
 
 	void testFindById();
 
+	void testFindByIdNotExists();
+
 	void testExistsById();
+
+	void testNotExistsById();
 
 	void testFindAll();
 
