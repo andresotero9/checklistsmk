@@ -14,6 +14,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.repository.CrudRepository;
 
 import br.com.sotero.checklistsmk.model.ClassEntity;
@@ -24,6 +25,8 @@ public abstract class CrudRepositoryTest<T, ID> implements ICrudRepositoryTest<T
 
 	@Autowired
 	protected CrudRepository<T, ID> crudRepository;
+
+	private int count;
 
 	@Test
 	@Override
@@ -51,7 +54,7 @@ public abstract class CrudRepositoryTest<T, ID> implements ICrudRepositoryTest<T
 		} catch (DataIntegrityViolationException e) {
 			assertTrue(true);
 		} catch (Exception e) {
-			fail();
+			fail(e.getMessage());
 		}
 	}
 
@@ -72,7 +75,7 @@ public abstract class CrudRepositoryTest<T, ID> implements ICrudRepositoryTest<T
 	@Override
 	public void testFindByIdNotExists() {
 		System.out.println("::: CrudRepositoryTest.testFindByIdNotExists() :::");
-		Optional<T> result = this.crudRepository.findById(notExistFindById());
+		Optional<T> result = this.crudRepository.findById(getNotExistFindById());
 		assertFalse(result.isPresent());
 	}
 
@@ -88,67 +91,110 @@ public abstract class CrudRepositoryTest<T, ID> implements ICrudRepositoryTest<T
 	@Override
 	public void testNotExistsById() {
 		System.out.println("::: CrudRepositoryTest.testNotExistsById() :::");
-		boolean result = this.crudRepository.existsById(notExistFindById());
+		boolean result = this.crudRepository.existsById(getNotExistFindById());
 		assertFalse(result);
 	}
 
+	@Test
 	@Override
 	public void testFindAll() {
-		this.crudRepository.findAll();
-
+		System.out.println("::: CrudRepositoryTest.testFindAll() :::");
+		Iterable<T> result = this.crudRepository.findAll();
+		assertTrue(result.iterator().hasNext());
 	}
 
+	@Test
 	@Override
 	public void testFindAllById() {
-		this.crudRepository.findAllById(null);
+		System.out.println("::: CrudRepositoryTest.testFindAllById() :::");
+		Iterable<T> result = this.crudRepository.findAllById(getIterableById());
+		assertTrue(result.iterator().hasNext());
 
 	}
 
+	@Test
 	@Override
 	public void testCount() {
-		this.crudRepository.count();
-
+		System.out.println("::: CrudRepositoryTest.testCount() :::");
+		long count = this.crudRepository.count();
+		assertTrue(count == this.count);
 	}
 
+	@Test
 	@Override
 	public void testDeleteById() {
-		this.crudRepository.deleteById(null);
+		System.out.println("::: CrudRepositoryTest.testDeleteById() :::");
+		boolean existsById = this.crudRepository.existsById(idFindById);
+		assertTrue(existsById);
+		this.crudRepository.deleteById(idFindById);
+		existsById = this.crudRepository.existsById(idFindById);
+		assertFalse(existsById);
 
+		// Testando com id que não existe na base de dados
+		try {
+			this.crudRepository.deleteById(idFindById);
+			fail();
+		} catch (EmptyResultDataAccessException e) {
+			assertTrue(true);
+		} catch (Exception e) {
+			fail(e.getMessage());
+		}
 	}
 
+	@Test
 	@Override
 	public void testDelete() {
-		this.crudRepository.delete(null);
+		System.out.println("::: CrudRepositoryTest.testDelete() :::");
+		Optional<T> entity = this.crudRepository.findById(idFindById);
+		this.crudRepository.delete(entity.get());
 
+		// testando com id que não existe
+		boolean existsById = this.crudRepository.existsById(idFindById);
+		assertFalse(existsById);
+
+		// testando com o objeto sem id
+		this.crudRepository.delete(entity());
+		assertTrue(true);
 	}
 
+	@Test
 	@Override
 	public void testDeleteAll() {
+		System.out.println("::: CrudRepositoryTest.testDeleteAll() :::");
+		boolean existsById = this.crudRepository.existsById(idFindById);
+		assertTrue(existsById);
 		this.crudRepository.deleteAll();
-
+		existsById = this.crudRepository.existsById(idFindById);
+		assertFalse(existsById);
 	}
 
-	public abstract T entity();
+	protected abstract T entity();
 
-	public abstract T entityOnlyInstanced();
+	protected abstract T entityOnlyInstanced();
 
-	public abstract List<T> listEntity();
+	protected abstract List<T> listEntity();
 
-	public abstract List<T> listEntitySaveAll();
+	protected abstract List<T> listEntitySaveAll();
 
-	public abstract ID notExistFindById();
+	protected abstract ID getNotExistFindById();
+
+	protected abstract Iterable<ID> getIterableById();
+
+	protected ID getIdFindById() {
+		return idFindById;
+	}
 
 	@SuppressWarnings("unchecked")
 	@Before
 	public void setUp() {
-		System.out.println("::: CrudRepositoryTest.setUp() :::");
-		Iterable<T> list = this.crudRepository.saveAll(listEntity());
+		List<T> listEntity = listEntity();
+		count = listEntity.size();
+		Iterable<T> list = this.crudRepository.saveAll(listEntity);
 		idFindById = ((ClassEntity<ID>) list.iterator().next()).getId();
 	}
 
 	@After
 	public void tearDown() {
-		System.out.println("::: CrudRepositoryTest.tearDown() :::");
 		this.crudRepository.deleteAll();
 	}
 }

@@ -66,8 +66,17 @@ public class CategoriaRepositoryTest extends CrudRepositoryTest<CategoriaModel, 
 	}
 
 	@Override
-	public Long notExistFindById() {
+	public Long getNotExistFindById() {
 		return 9999L;
+	}
+
+	@Override
+	protected Iterable<Long> getIterableById() {
+		List<Long> ids = new ArrayList<Long>();
+		ids.add(getIdFindById());
+		ids.add(getNotExistFindById());
+		Iterable<Long> result = new ArrayList<Long>(ids);
+		return result;
 	}
 
 }
