@@ -1,6 +1,6 @@
 package br.com.sotero.checklistsmk.repository;
 
-interface ICrudRepositoryTest<T, ID> {
+interface ICrudRepositoryTest {
 
 	void testSave();
 

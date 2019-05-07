@@ -2,7 +2,7 @@ package br.com.sotero.checklistsmk.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -19,7 +19,7 @@ import org.springframework.data.repository.CrudRepository;
 
 import br.com.sotero.checklistsmk.model.ClassEntity;
 
-public abstract class CrudRepositoryTest<T, ID> implements ICrudRepositoryTest<T, ID> {
+public abstract class CrudRepositoryTest<T, ID> implements ICrudRepositoryTest {
 
 	private ID idFindById;
 
@@ -32,8 +32,10 @@ public abstract class CrudRepositoryTest<T, ID> implements ICrudRepositoryTest<T
 	@Override
 	public void testSave() {
 		System.out.println("::: CrudRepositoryTest.testSave() :::");
-		T result = this.crudRepository.save(entity());
-		assertNotNull(result);
+		T entity = entity();
+		T result = this.crudRepository.save(entity);
+
+		assertSame(((ClassEntity<ID>) result).getId(), ((ClassEntity<ID>) entity).getId());
 	}
 
 	@Test
@@ -64,8 +66,7 @@ public abstract class CrudRepositoryTest<T, ID> implements ICrudRepositoryTest<T
 		System.out.println("::: CrudRepositoryTest.testFindById() :::");
 		Optional<T> listEntity = this.crudRepository.findById(idFindById);
 		if (listEntity.isPresent()) {
-			ClassEntity<?> t = (ClassEntity<?>) listEntity.get();
-			assertTrue(t.getId() == idFindById);
+			assertTrue(((ClassEntity<ID>) listEntity.get()).getId() == idFindById);
 		} else {
 			fail();
 		}
@@ -184,17 +185,20 @@ public abstract class CrudRepositoryTest<T, ID> implements ICrudRepositoryTest<T
 		return idFindById;
 	}
 
-	@SuppressWarnings("unchecked")
 	@Before
 	public void setUp() {
+		System.out.println("::: setUp() :::");
 		List<T> listEntity = listEntity();
 		count = listEntity.size();
-		Iterable<T> list = this.crudRepository.saveAll(listEntity);
-		idFindById = ((ClassEntity<ID>) list.iterator().next()).getId();
+		this.crudRepository.saveAll(listEntity);
+		for (T t : listEntity) {
+			System.out.println("Categoria: " + ((ClassEntity<ID>) t).getId());
+		}
 	}
 
 	@After
 	public void tearDown() {
 		this.crudRepository.deleteAll();
 	}
+
 }

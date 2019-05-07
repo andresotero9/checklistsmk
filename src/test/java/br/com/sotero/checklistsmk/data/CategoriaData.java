@@ -1,10 +1,11 @@
 package br.com.sotero.checklistsmk.data;
 
-import br.com.sotero.checklistsmk.model.CategoriaModel;
+import br.com.sotero.checklistsmk.model.Categoria;
 
 public class CategoriaData {
-	public static CategoriaModel getCategoria() {
-		CategoriaModel categoria = new CategoriaModel();
+	public static Categoria getCategoria() {
+		Categoria categoria = new Categoria();
+		categoria.setId(7L);
 		categoria.setNmeCategoria("Alimentos");
 		return categoria;
 	}

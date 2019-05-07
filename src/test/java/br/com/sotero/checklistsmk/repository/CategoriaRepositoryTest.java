@@ -14,41 +14,41 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import br.com.sotero.checklistsmk.data.CategoriaData;
-import br.com.sotero.checklistsmk.model.CategoriaModel;
+import br.com.sotero.checklistsmk.model.Categoria;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @ActiveProfiles("test")
-public class CategoriaRepositoryTest extends CrudRepositoryTest<CategoriaModel, Long> {
+public class CategoriaRepositoryTest extends CrudRepositoryTest<Categoria, Long> {
 
 	@Override
-	public CategoriaModel entity() {
+	public Categoria entity() {
 		return CategoriaData.getCategoria();
 	}
 
 	@Override
-	public CategoriaModel entityOnlyInstanced() {
-		return new CategoriaModel();
+	public Categoria entityOnlyInstanced() {
+		return new Categoria();
 	}
 
 	@Override
-	public List<CategoriaModel> listEntity() {
-		List<CategoriaModel> listCategoria = new ArrayList<CategoriaModel>();
-		listCategoria.add(new CategoriaModel("Bebidas"));
-		listCategoria.add(new CategoriaModel("Carnes"));
-		listCategoria.add(new CategoriaModel("Limpeza"));
-		listCategoria.add(new CategoriaModel("Perfumaria"));
-		listCategoria.add(new CategoriaModel("Bebês"));
-		listCategoria.add(new CategoriaModel("Peixaria"));
+	public List<Categoria> listEntity() {
+		List<Categoria> listCategoria = new ArrayList<>();
+		listCategoria.add(new Categoria(1L, "Bebidas"));
+		listCategoria.add(new Categoria(2L, "Carnes"));
+		listCategoria.add(new Categoria(3L, "Limpeza"));
+		listCategoria.add(new Categoria(4L, "Perfumaria"));
+		listCategoria.add(new Categoria(5L, "Bebês"));
+		listCategoria.add(new Categoria(6L, "Peixaria"));
 		return listCategoria;
 	}
 
 	@Override
-	public List<CategoriaModel> listEntitySaveAll() {
-		List<CategoriaModel> listCategoria = new ArrayList<CategoriaModel>();
-		listCategoria.add(new CategoriaModel("Automotivo"));
-		listCategoria.add(new CategoriaModel("Eletrônicos"));
-		listCategoria.add(new CategoriaModel("Eletrodomésticos"));
+	public List<Categoria> listEntitySaveAll() {
+		List<Categoria> listCategoria = new ArrayList<>();
+		listCategoria.add(new Categoria("Automotivo"));
+		listCategoria.add(new Categoria("Eletrônicos"));
+		listCategoria.add(new Categoria("Eletrodomésticos"));
 		return listCategoria;
 	}
 
@@ -56,7 +56,7 @@ public class CategoriaRepositoryTest extends CrudRepositoryTest<CategoriaModel, 
 	public void testSaveNmeCategoriaUnique() {
 		System.out.println("::: testSaveNmeCategoriaUnique() :::");
 		try {
-			crudRepository.save(new CategoriaModel("Bebidas"));
+			crudRepository.save(new Categoria("Bebidas"));
 			fail();
 		} catch (DataIntegrityViolationException e) {
 			assertTrue(true);

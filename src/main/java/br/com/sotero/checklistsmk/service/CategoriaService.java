@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import br.com.sotero.checklistsmk.model.CategoriaModel;
+import br.com.sotero.checklistsmk.model.Categoria;
 import br.com.sotero.checklistsmk.model.ResponseModel;
 import br.com.sotero.checklistsmk.repository.CategoriaRepository;
 
@@ -29,7 +29,7 @@ public class CategoriaService {
 	 * @return
 	 */
 	@RequestMapping(value = "/categoria", method = RequestMethod.POST, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public @ResponseBody ResponseModel salvar(@RequestBody CategoriaModel categoria) {
+	public @ResponseBody ResponseModel salvar(@RequestBody Categoria categoria) {
 
 		try {
 
@@ -50,7 +50,7 @@ public class CategoriaService {
 	 * @return
 	 */
 	@RequestMapping(value = "/categoria", method = RequestMethod.PUT, consumes = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public @ResponseBody ResponseModel atualizar(@RequestBody CategoriaModel categoria) {
+	public @ResponseBody ResponseModel atualizar(@RequestBody Categoria categoria) {
 
 		try {
 
@@ -70,7 +70,7 @@ public class CategoriaService {
 	 * @return
 	 */
 	@RequestMapping(value = "/categoria", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public @ResponseBody Iterable<CategoriaModel> consultar() {
+	public @ResponseBody Iterable<Categoria> consultar() {
 
 		return this.categoriaRepository.findAll();
 	}
@@ -82,7 +82,7 @@ public class CategoriaService {
 	 * @return
 	 */
 	@RequestMapping(value = "/categoria/{codigo}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
-	public @ResponseBody Optional<CategoriaModel> buscar(@PathVariable("codigo") Long codigo) {
+	public @ResponseBody Optional<Categoria> buscar(@PathVariable("codigo") Long codigo) {
 
 		return this.categoriaRepository.findById(codigo);
 	}
@@ -96,7 +96,7 @@ public class CategoriaService {
 	@RequestMapping(value = "/categoria/{codigo}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public @ResponseBody ResponseModel excluir(@PathVariable("codigo") Long codigo) {
 
-		Optional<CategoriaModel> categoriaModel = categoriaRepository.findById(codigo);
+		Optional<Categoria> categoriaModel = categoriaRepository.findById(codigo);
 
 		if (categoriaModel != null) {
 
