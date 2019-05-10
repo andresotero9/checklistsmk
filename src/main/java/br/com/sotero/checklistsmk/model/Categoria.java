@@ -17,7 +17,12 @@ public class Categoria extends ClassEntity<Long> {
 
 	private static final long serialVersionUID = -2546899515280442365L;
 
-	@Column(name = "NME_CATEGORIA", nullable = false, unique = true)
+	@Id
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	@Column(name = "ID_CATEGORIA")
+	private Long idCategoria;
+
+	@Column(name = "NME_CATEGORIA", unique = true, nullable = false, length = 50)
 	private String nmeCategoria;
 
 	@OneToMany
@@ -35,19 +40,17 @@ public class Categoria extends ClassEntity<Long> {
 	}
 
 	public Categoria(Long idCategoria, String nmeCategoria) {
-		super.setId(idCategoria);
+		this.idCategoria = idCategoria;
 		this.nmeCategoria = nmeCategoria;
 	}
 
 	/*
 	 * Getters
 	 */
+
 	@Override
-	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name = "ID_CATEGORIA")
 	public Long getId() {
-		return super.getId();
+		return this.idCategoria;
 	}
 
 	public String getNmeCategoria() {
@@ -57,6 +60,15 @@ public class Categoria extends ClassEntity<Long> {
 	/*
 	 * Setters
 	 */
+	@Override
+	public void setId(Long idCategoria) {
+		this.idCategoria = idCategoria;
+	}
+
+	public void setItens(List<Item> itens) {
+		this.itens = itens;
+	}
+
 	public void setNmeCategoria(String nmeCategoria) {
 		this.nmeCategoria = nmeCategoria;
 	}

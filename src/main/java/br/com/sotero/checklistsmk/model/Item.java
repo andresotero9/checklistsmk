@@ -17,11 +17,11 @@ public class Item extends ClassEntity<Long> {
 	private static final long serialVersionUID = -3434156313860674696L;
 
 	@Id
-	@GeneratedValue(strategy = GenerationType.AUTO)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "ID_ITEM")
 	private Long idItem;
 
-	@Column(name = "NME_ITEM", nullable = false, unique = false)
+	@Column(name = "NME_ITEM", nullable = false, unique = false, length = 50)
 	private String nmeItem;
 
 	@ManyToOne(fetch = FetchType.LAZY)
@@ -48,7 +48,7 @@ public class Item extends ClassEntity<Long> {
 	 */
 	@Override
 	public Long getId() {
-		return this.idItem;
+		return idItem;
 	}
 
 	public String getNmeItem() {
@@ -62,6 +62,11 @@ public class Item extends ClassEntity<Long> {
 	/*
 	 * Setters
 	 */
+	@Override
+	public void setId(Long idItem) {
+		this.idItem = idItem;
+	}
+
 	public void setNmeItem(String nmeItem) {
 		this.nmeItem = nmeItem;
 	}
