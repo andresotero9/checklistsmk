@@ -66,11 +66,6 @@ public class CategoriaRepositoryTest extends CrudRepositoryTest<Categoria, Long>
 	}
 
 	@Override
-	public Long getExistFindById() {
-		return 1L;
-	}
-
-	@Override
 	public Long getNotExistFindById() {
 		return 9999L;
 	}
