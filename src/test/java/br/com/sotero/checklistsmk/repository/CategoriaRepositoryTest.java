@@ -27,6 +27,11 @@ public class CategoriaRepositoryTest extends CrudRepositoryTest<Categoria, Long>
 	}
 
 	@Override
+	public Categoria entityNoId() {
+		return CategoriaData.getCategoriaNoId();
+	}
+
+	@Override
 	public Categoria entityOnlyInstanced() {
 		return new Categoria();
 	}
@@ -68,15 +73,6 @@ public class CategoriaRepositoryTest extends CrudRepositoryTest<Categoria, Long>
 	@Override
 	public Long getNotExistFindById() {
 		return 9999L;
-	}
-
-	@Override
-	protected Iterable<Long> getIterableById() {
-		List<Long> ids = new ArrayList<Long>();
-		ids.add(getExistFindById());
-		ids.add(getNotExistFindById());
-		Iterable<Long> result = new ArrayList<Long>(ids);
-		return result;
 	}
 
 }

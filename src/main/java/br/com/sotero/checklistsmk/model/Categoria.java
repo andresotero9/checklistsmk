@@ -73,4 +73,35 @@ public class Categoria extends ClassEntity<Long> {
 		this.nmeCategoria = nmeCategoria;
 	}
 
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((idCategoria == null) ? 0 : idCategoria.hashCode());
+		result = prime * result + ((nmeCategoria == null) ? 0 : nmeCategoria.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Categoria other = (Categoria) obj;
+		if (idCategoria == null) {
+			if (other.idCategoria != null)
+				return false;
+		} else if (!idCategoria.equals(other.idCategoria))
+			return false;
+		if (nmeCategoria == null) {
+			if (other.nmeCategoria != null)
+				return false;
+		} else if (!nmeCategoria.equals(other.nmeCategoria))
+			return false;
+		return true;
+	}
+
 }

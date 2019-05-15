@@ -8,4 +8,10 @@ public class CategoriaData {
 		categoria.setNmeCategoria("Alimentos");
 		return categoria;
 	}
+
+	public static Categoria getCategoriaNoId() {
+		Categoria categoria = new Categoria();
+		categoria.setNmeCategoria("Alimentos");
+		return categoria;
+	}
 }

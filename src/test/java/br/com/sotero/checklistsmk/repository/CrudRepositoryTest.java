@@ -6,7 +6,6 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,7 +26,9 @@ public abstract class CrudRepositoryTest<T, ID> implements ICrudRepositoryTest {
 
 	private int count;
 
-	@SuppressWarnings("unchecked")
+	protected ClassEntity<ID> classEntityForTest;
+
+	// :::... INICIO - TESTES UNITARIOS ...:::
 	@Test
 	@Override
 	public void testSave() {
@@ -63,10 +64,8 @@ public abstract class CrudRepositoryTest<T, ID> implements ICrudRepositoryTest {
 	@Override
 	public void testFindById() {
 		System.out.println("::: CrudRepositoryTest.testFindById() :::");
-		List<ClassEntity<ID>> list = castListClassEntity(this.crudRepository.findAll());
-		ClassEntity<ID> classEntity = list.get(0);
-		ClassEntity<ID> result = castClassEntity(this.crudRepository.findById(classEntity.getId()).get());
-		assertEquals(classEntity, result);
+		ClassEntity<ID> result = castClassEntity(this.crudRepository.findById(this.classEntityForTest.getId()).get());
+		assertEquals(this.classEntityForTest, result);
 	}
 
 	@Test
@@ -81,10 +80,7 @@ public abstract class CrudRepositoryTest<T, ID> implements ICrudRepositoryTest {
 	@Override
 	public void testExistsById() {
 		System.out.println("::: CrudRepositoryTest.testExistsById() :::");
-		List<ClassEntity<ID>> list = castListClassEntity(this.crudRepository.findAll());
-		ClassEntity<ID> classEntity = list.get(0);
-		ClassEntity<ID> resultClassEntity = castClassEntity(this.crudRepository.findById(classEntity.getId()).get());
-		boolean result = this.crudRepository.existsById(resultClassEntity.getId());
+		boolean result = this.crudRepository.existsById(this.classEntityForTest.getId());
 		assertTrue(result);
 	}
 
@@ -109,12 +105,11 @@ public abstract class CrudRepositoryTest<T, ID> implements ICrudRepositoryTest {
 	public void testFindAllById() {
 		System.out.println("::: CrudRepositoryTest.testFindAllById() :::");
 
-		Iterable<T> findAll = this.crudRepository.findAll();
+		List<ClassEntity<ID>> findAll = castListClassEntity(this.crudRepository.findAll());
 
 		List<ID> listIDs = new ArrayList<>();
 
-		while (findAll.iterator().hasNext()) {
-			ClassEntity<ID> castClassEntity = castClassEntity(findAll.iterator().next());
+		for (ClassEntity<ID> castClassEntity : findAll) {
 			listIDs.add(castClassEntity.getId());
 		}
 
@@ -135,20 +130,14 @@ public abstract class CrudRepositoryTest<T, ID> implements ICrudRepositoryTest {
 	@Override
 	public void testDeleteById() {
 		System.out.println("::: CrudRepositoryTest.testDeleteById() :::");
-		
-		
-		
-		
-		
-		boolean existsById = this.crudRepository.existsById(getExistFindById());
-		assertTrue(existsById);
-		this.crudRepository.deleteById(getExistFindById());
-		existsById = this.crudRepository.existsById(getExistFindById());
+
+		this.crudRepository.deleteById(this.classEntityForTest.getId());
+		boolean existsById = this.crudRepository.existsById(this.classEntityForTest.getId());
 		assertFalse(existsById);
 
 		// Testando com id que não existe na base de dados
 		try {
-			this.crudRepository.deleteById(getExistFindById());
+			this.crudRepository.deleteById(this.classEntityForTest.getId());
 			fail();
 		} catch (EmptyResultDataAccessException e) {
 			assertTrue(true);
@@ -157,19 +146,19 @@ public abstract class CrudRepositoryTest<T, ID> implements ICrudRepositoryTest {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	@Test
 	@Override
 	public void testDelete() {
 		System.out.println("::: CrudRepositoryTest.testDelete() :::");
-		Optional<T> entity = this.crudRepository.findById(getExistFindById());
-		this.crudRepository.delete(entity.get());
+		this.crudRepository.delete((T) this.classEntityForTest);
 
 		// testando com id que não existe
-		boolean existsById = this.crudRepository.existsById(getExistFindById());
+		boolean existsById = this.crudRepository.existsById(this.classEntityForTest.getId());
 		assertFalse(existsById);
 
 		// testando com o objeto sem id
-		this.crudRepository.delete(entity());
+		this.crudRepository.delete(entityNoId());
 		assertTrue(true);
 	}
 
@@ -177,12 +166,13 @@ public abstract class CrudRepositoryTest<T, ID> implements ICrudRepositoryTest {
 	@Override
 	public void testDeleteAll() {
 		System.out.println("::: CrudRepositoryTest.testDeleteAll() :::");
-		boolean existsById = this.crudRepository.existsById(getExistFindById());
+		boolean existsById = this.crudRepository.existsById(this.classEntityForTest.getId());
 		assertTrue(existsById);
 		this.crudRepository.deleteAll();
-		existsById = this.crudRepository.existsById(getExistFindById());
+		existsById = this.crudRepository.existsById(this.classEntityForTest.getId());
 		assertFalse(existsById);
 	}
+	// :::... FIM - TESTES UNITARIOS ...:::
 
 	@SuppressWarnings("unchecked")
 	private ClassEntity<ID> castClassEntity(T t) {
@@ -196,6 +186,8 @@ public abstract class CrudRepositoryTest<T, ID> implements ICrudRepositoryTest {
 
 	protected abstract T entity();
 
+	protected abstract T entityNoId();
+
 	protected abstract T entityOnlyInstanced();
 
 	protected abstract List<T> listEntity();
@@ -204,17 +196,14 @@ public abstract class CrudRepositoryTest<T, ID> implements ICrudRepositoryTest {
 
 	protected abstract ID getNotExistFindById();
 
-	protected abstract Iterable<ID> getIterableById();
-
 	@Before
 	public void setUp() {
 		System.out.println("::: setUp() :::");
 		List<T> listEntity = listEntity();
 		count = listEntity.size();
-		List<ClassEntity<ID>> saveAll = (ArrayList<ClassEntity<ID>>) this.crudRepository.saveAll(listEntity);
-		for (ClassEntity<ID> object : saveAll) {
-			System.out.println(object.getId());
-		}
+		List<ClassEntity<ID>> list = castListClassEntity(this.crudRepository.saveAll(listEntity));
+
+		this.classEntityForTest = list.get(0);
 	}
 
 	@After

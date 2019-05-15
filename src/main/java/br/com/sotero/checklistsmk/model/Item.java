@@ -43,6 +43,11 @@ public class Item extends ClassEntity<Long> {
 		this.nmeItem = nmeItem;
 	}
 
+	public Item(String nmeItem, Categoria categoria) {
+		this.nmeItem = nmeItem;
+		this.categoria = categoria;
+	}
+
 	/*
 	 * Getters
 	 */
@@ -73,6 +78,43 @@ public class Item extends ClassEntity<Long> {
 
 	public void setCategoria(Categoria categoria) {
 		this.categoria = categoria;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((categoria == null) ? 0 : categoria.hashCode());
+		result = prime * result + ((idItem == null) ? 0 : idItem.hashCode());
+		result = prime * result + ((nmeItem == null) ? 0 : nmeItem.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Item other = (Item) obj;
+		if (categoria == null) {
+			if (other.categoria != null)
+				return false;
+		} else if (!categoria.equals(other.categoria))
+			return false;
+		if (idItem == null) {
+			if (other.idItem != null)
+				return false;
+		} else if (!idItem.equals(other.idItem))
+			return false;
+		if (nmeItem == null) {
+			if (other.nmeItem != null)
+				return false;
+		} else if (!nmeItem.equals(other.nmeItem))
+			return false;
+		return true;
 	}
 
 }
