@@ -3,6 +3,7 @@ package br.com.sotero.checklistsmk.repository;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.junit.After;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,16 +22,19 @@ import br.com.sotero.checklistsmk.model.Item;
 public class ItemRepositoryTest extends CrudRepositoryTest<Item, Long> {
 
 	@Autowired
-	private CrudRepository<Categoria, Long> CategoriaCrudRepository;
-	
+	private CrudRepository<Categoria, Long> categoriaCrudRepository;
+
 	@Override
 	protected Item entity() {
-		return ItemData.getItem();
+		Item item = ItemData.getItem();
+		Categoria categoria = categoriaCrudRepository.save(CategoriaData.getCategoriaNoId("Alimentos"));
+		item.setCategoria(categoria);
+		return item;
 	}
 
 	@Override
 	protected Item entityNoId() {
-		return ItemData.getItemNoId();
+		return ItemData.getItem();
 	}
 
 	@Override
@@ -40,21 +44,21 @@ public class ItemRepositoryTest extends CrudRepositoryTest<Item, Long> {
 
 	@Override
 	protected List<Item> listEntity() {
-		cr
+		Categoria categoria = categoriaCrudRepository.save(CategoriaData.getCategoriaNoId("Bebidas"));
+
 		List<Item> itens = new ArrayList<Item>();
-//		List<Cal>
-//		crudRepository.save(CategoriaData.getCategoria());
-//		crudRepository.saveAll(new Categoria("Bebidas"));
-		itens.add(new Item("Feijao"));
+		itens.add(new Item("Refrigerante", categoria));
 
 		return itens;
 	}
 
 	@Override
 	protected List<Item> listEntitySaveAll() {
+		Categoria categoria = categoriaCrudRepository.save(CategoriaData.getCategoriaNoId("Bazar"));
 		List<Item> itens = new ArrayList<Item>();
-		itens.add(new Item("Arroz", CategoriaData.getCategoria()));
-
+		itens.add(new Item("Toalha", categoria));
+		itens.add(new Item("Fronha", categoria));
+		itens.add(new Item("Roupa de cama", categoria));
 		return itens;
 	}
 
@@ -63,4 +67,10 @@ public class ItemRepositoryTest extends CrudRepositoryTest<Item, Long> {
 		return 9999L;
 	}
 
+	@After
+	public void tearDown() {
+		System.out.println("::: ItemRepositoryTest.tearDown() :::");
+		super.tearDown();
+		this.categoriaCrudRepository.deleteAll();
+	}
 }

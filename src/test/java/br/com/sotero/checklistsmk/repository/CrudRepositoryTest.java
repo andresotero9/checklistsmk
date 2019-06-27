@@ -208,6 +208,7 @@ public abstract class CrudRepositoryTest<T, ID> implements ICrudRepositoryTest {
 
 	@After
 	public void tearDown() {
+		System.out.println("::: tearDown() :::");
 		this.crudRepository.deleteAll();
 	}
 

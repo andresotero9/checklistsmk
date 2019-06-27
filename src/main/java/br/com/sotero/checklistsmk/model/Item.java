@@ -2,7 +2,6 @@ package br.com.sotero.checklistsmk.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -24,8 +23,8 @@ public class Item extends ClassEntity<Long> {
 	@Column(name = "NME_ITEM", nullable = false, unique = false, length = 50)
 	private String nmeItem;
 
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "ID_CATEGORIA", nullable = false, referencedColumnName = "ID_CATEGORIA")
+	@ManyToOne
+	@JoinColumn(name = "ID_CATEGORIA")
 	private Categoria categoria;
 
 	/*

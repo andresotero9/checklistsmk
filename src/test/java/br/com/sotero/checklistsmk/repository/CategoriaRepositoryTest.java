@@ -23,12 +23,12 @@ public class CategoriaRepositoryTest extends CrudRepositoryTest<Categoria, Long>
 
 	@Override
 	public Categoria entity() {
-		return CategoriaData.getCategoria();
+		return CategoriaData.getCategoria("Alimentos");
 	}
 
 	@Override
 	public Categoria entityNoId() {
-		return CategoriaData.getCategoriaNoId();
+		return CategoriaData.getCategoriaNoId("Alimentos");
 	}
 
 	@Override

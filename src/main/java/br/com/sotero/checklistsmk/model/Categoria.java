@@ -7,7 +7,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
@@ -25,8 +24,7 @@ public class Categoria extends ClassEntity<Long> {
 	@Column(name = "NME_CATEGORIA", unique = true, nullable = false, length = 50)
 	private String nmeCategoria;
 
-	@OneToMany
-	@JoinColumn(name = "ID_ITEM", nullable = true)
+	@OneToMany(mappedBy = "categoria")
 	private List<Item> itens;
 
 	/*
@@ -55,6 +53,10 @@ public class Categoria extends ClassEntity<Long> {
 
 	public String getNmeCategoria() {
 		return nmeCategoria;
+	}
+
+	public List<Item> getItens() {
+		return itens;
 	}
 
 	/*
