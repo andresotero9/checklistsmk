@@ -10,9 +10,9 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import br.com.sotero.checklistsmk.repository.CategoriaRepository;
 
-@RunWith(SpringRunner.class)
-@SpringBootTest
-@ActiveProfiles("test")
+//@RunWith(SpringRunner.class)
+//@SpringBootTest
+//@ActiveProfiles("test")
 public class CategoriaServiceTest extends CrudServiceTest {
 
 	@MockBean
