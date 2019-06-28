@@ -13,17 +13,17 @@ import br.com.sotero.checklistsmk.repository.CategoriaRepository;
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @ActiveProfiles("test")
-public class CategoriaServiceTest extends CrudServiceTest{
+public class CategoriaServiceTest extends CrudServiceTest {
 
 	@MockBean
 	private CategoriaRepository categoriaRepository;
-	
+
 	@Autowired
 	private CategoriaService categoriaService;
-	
+
 	@Before
 	public void setUp() {
-		
+
 	}
 
 }
