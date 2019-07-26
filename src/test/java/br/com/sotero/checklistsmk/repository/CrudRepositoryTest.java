@@ -8,52 +8,145 @@ import static org.junit.Assert.fail;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Consumer;
 
 import org.junit.After;
-import org.junit.Before;
 import org.junit.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.dao.InvalidDataAccessApiUsageException;
 import org.springframework.data.repository.CrudRepository;
 
+import br.com.sotero.checklistsmk.ICrudCommonTest;
 import br.com.sotero.checklistsmk.model.ClassEntity;
 
-public abstract class CrudRepositoryTest<T, ID> implements ICrudRepositoryTest {
+public abstract class CrudRepositoryTest<T, ID> implements ICrudCommonTest<T, ID> {
 
-	@Autowired
-	protected CrudRepository<T, ID> crudRepository;
-
-	private int count;
-
-	protected ClassEntity<ID> classEntityForTest;
+	protected abstract CrudRepository<T, ID> getRepository();
 
 	// :::... INICIO - TESTES UNITARIOS ...:::
 	@Test
-	@Override
+	@SuppressWarnings("unchecked")
 	public void testSave() {
 		System.out.println("::: CrudRepositoryTest.testSave() :::");
-		ClassEntity<ID> result = castClassEntity(this.crudRepository.save(entity()));
-		assertTrue(result.getId() != null);
+
+		// Teste somente objeto instanciado
+		{
+			try {
+				getRepository().save(entityOnlyInstanced());
+				fail();
+			} catch (DataIntegrityViolationException e) {
+				assertTrue(true);
+			} catch (Exception e) {
+				fail(e.getMessage());
+			}
+		}
+
+		// Teste com o objeto nulo
+		{
+			try {
+				getRepository().save(null);
+				fail();
+			} catch (InvalidDataAccessApiUsageException e) {
+				assertTrue(true);
+			} catch (Exception e) {
+				fail(e.getMessage());
+			}
+		}
+
+		// Teste objeto real
+		{
+			// Persistindo objeto
+			ClassEntity<ID> result = castClassEntity(getRepository().save(entity()));
+			assertTrue(result.getId() != null);
+
+			// Tentando persistir objeto que já existe
+			try {
+				getRepository().save(entity());
+				fail();
+			} catch (DataIntegrityViolationException e) {
+				assertTrue(true);
+			} catch (Exception e) {
+				fail(e.getMessage());
+			}
+
+			// Update no objeto
+			alteracaoNaEntidadeParaUpdate(result);
+			ClassEntity<ID> result2 = castClassEntity(getRepository().save((T) result));
+			assertEquals(result.getId(), result2.getId());
+		}
 	}
 
 	@Test
-	@Override
+	@SuppressWarnings("unchecked")
 	public void testSaveAll() {
 		System.out.println("::: CrudRepositoryTest.testSaveAll() :::");
-		List<T> listEntitySaveAll = listEntitySaveAll();
-		List<ClassEntity<ID>> saveAll = castListClassEntity(this.crudRepository.saveAll(listEntitySaveAll));
-		assertTrue(saveAll.size() == listEntitySaveAll.size());
+
+		// Persistir lista de objetos
+		List<T> listEntitySaveAll = listEntity();
+		Iterable<T> result = getRepository().saveAll(listEntitySaveAll);
+
+		List<ClassEntity<ID>> listResult = (List<ClassEntity<ID>>) result;
+
+		assertTrue(listResult.size() == listEntitySaveAll.size());
+
+		// Persistir lista de objetos alterados (update)
+		alteracaoNasEntidadesParaUpdate(listResult);
+
+		Iterable<T> result2 = getRepository().saveAll(result);
+
+		List<ClassEntity<ID>> listResult2 = (List<ClassEntity<ID>>) result2;
+
+		assertEquals(listResult.size(), listResult2.size());
 	}
 
 	@Test
-	@Override
-	public void testSaveOnlyInstancedEntity() {
-		System.out.println("::: CrudRepositoryTest.testSaveOnlyInstancedEntity() :::");
+	public void testFindById() {
+		System.out.println("::: CrudRepositoryTest.testFindById() :::");
+
+		// Procurar objeto pelo qual não existe o ID
+		{
+			try {
+				getRepository().findById(null);
+				fail();
+			} catch (InvalidDataAccessApiUsageException e) {
+				assertTrue(true);
+			} catch (Exception e) {
+				fail(e.getMessage());
+			}
+		}
+
+		// Before test
+		Iterable<T> saveAll = getRepository().saveAll(listEntity());
+		ClassEntity<ID> entity = castClassEntity(saveAll.iterator().next());
+
+		// Procurar objeto por ID
+		Optional<T> result = getRepository().findById(entity.getId());
+		assertTrue(result.isPresent());
+
+		// Procurar objeto pelo qual não existe o ID
+		Optional<T> result2 = getRepository().findById(getIDNaoExiste());
+		assertFalse(result2.isPresent());
+	}
+
+	@Test
+	public void testExistsById() {
+		System.out.println("::: CrudRepositoryTest.testExistsById() :::");
+
+		// Before test
+		Iterable<T> saveAll = getRepository().saveAll(listEntity());
+		ClassEntity<ID> entity = castClassEntity(saveAll.iterator().next());
+
+		boolean result = getRepository().existsById(entity.getId());
+		assertTrue(result);
+
+		boolean result2 = getRepository().existsById(getIDNaoExiste());
+		assertFalse(result2);
+
 		try {
-			this.crudRepository.save(entityOnlyInstanced());
+			getRepository().existsById(null);
 			fail();
-		} catch (DataIntegrityViolationException e) {
+		} catch (InvalidDataAccessApiUsageException e) {
 			assertTrue(true);
 		} catch (Exception e) {
 			fail(e.getMessage());
@@ -61,155 +154,203 @@ public abstract class CrudRepositoryTest<T, ID> implements ICrudRepositoryTest {
 	}
 
 	@Test
-	@Override
-	public void testFindById() {
-		System.out.println("::: CrudRepositoryTest.testFindById() :::");
-		ClassEntity<ID> result = castClassEntity(this.crudRepository.findById(this.classEntityForTest.getId()).get());
-		assertEquals(this.classEntityForTest, result);
-	}
-
-	@Test
-	@Override
-	public void testFindByIdNotExists() {
-		System.out.println("::: CrudRepositoryTest.testFindByIdNotExists() :::");
-		Optional<T> result = this.crudRepository.findById(getNotExistFindById());
-		assertFalse(result.isPresent());
-	}
-
-	@Test
-	@Override
-	public void testExistsById() {
-		System.out.println("::: CrudRepositoryTest.testExistsById() :::");
-		boolean result = this.crudRepository.existsById(this.classEntityForTest.getId());
-		assertTrue(result);
-	}
-
-	@Test
-	@Override
-	public void testNotExistsById() {
-		System.out.println("::: CrudRepositoryTest.testNotExistsById() :::");
-		boolean result = this.crudRepository.existsById(getNotExistFindById());
-		assertFalse(result);
-	}
-
-	@Test
-	@Override
 	public void testFindAll() {
 		System.out.println("::: CrudRepositoryTest.testFindAll() :::");
-		Iterable<T> result = this.crudRepository.findAll();
-		assertTrue(result.iterator().hasNext());
+
+		{
+			Iterable<T> result = getRepository().findAll();
+			assertFalse(result.iterator().hasNext());
+		}
+
+		// Carga de objetos
+		getRepository().saveAll(listEntity());
+
+		{
+			Iterable<T> result = getRepository().findAll();
+			assertTrue(result.iterator().hasNext());
+		}
 	}
 
 	@Test
-	@Override
+	@SuppressWarnings("unchecked")
 	public void testFindAllById() {
 		System.out.println("::: CrudRepositoryTest.testFindAllById() :::");
 
-		List<ClassEntity<ID>> findAll = castListClassEntity(this.crudRepository.findAll());
-
-		List<ID> listIDs = new ArrayList<>();
-
-		for (ClassEntity<ID> castClassEntity : findAll) {
-			listIDs.add(castClassEntity.getId());
+		// Teste passando valor nulo
+		{
+			try {
+				getRepository().findAllById(null);
+			} catch (InvalidDataAccessApiUsageException e) {
+				assertTrue(true);
+			} catch (Exception e) {
+				fail(e.getMessage());
+			}
 		}
 
-		List<ClassEntity<ID>> result = castListClassEntity(this.crudRepository.findAllById(listIDs));
+		// Teste passando somente a lista instanciada
+		{
+			Iterable<T> result = getRepository().findAllById(new ArrayList<ID>());
+			assertFalse(result.iterator().hasNext());
+		}
 
-		assertTrue(listIDs.size() == result.size());
+		// Teste passando uma lista de IDs que não existe
+		{
+			List<ID> listIDs = new ArrayList<>();
+			listIDs.add(getIDNaoExiste());
+			Iterable<T> result = getRepository().findAllById(listIDs);
+			assertFalse(result.iterator().hasNext());
+		}
+
+		// Carga de objetos
+		{
+			getRepository().saveAll(listEntity());
+
+			Iterable<T> findAll = getRepository().findAll();
+
+			List<ID> listIDs = new ArrayList<>();
+
+			findAll.forEach(new Consumer<T>() {
+				@Override
+				public void accept(T t) {
+					listIDs.add((castClassEntity(t)).getId());
+				}
+			});
+
+			List<ClassEntity<ID>> result = (List<ClassEntity<ID>>) getRepository().findAllById(listIDs);
+
+			assertTrue(listIDs.size() == result.size());
+		}
 	}
 
 	@Test
-	@Override
+	@SuppressWarnings("unchecked")
 	public void testCount() {
 		System.out.println("::: CrudRepositoryTest.testCount() :::");
-		long count = this.crudRepository.count();
-		assertTrue(count == this.count);
+
+		// Contagem com a tabela vazia
+		{
+			long count = getRepository().count();
+			assertTrue(count == 0);
+		}
+
+		// Carga de objetos
+		List<ClassEntity<ID>> list = (List<ClassEntity<ID>>) getRepository().saveAll(listEntity());
+
+		// Contagem com a tabela populada
+		{
+			long count = getRepository().count();
+			assertTrue(count == list.size());
+		}
 	}
 
 	@Test
-	@Override
 	public void testDeleteById() {
 		System.out.println("::: CrudRepositoryTest.testDeleteById() :::");
 
-		this.crudRepository.deleteById(this.classEntityForTest.getId());
-		boolean existsById = this.crudRepository.existsById(this.classEntityForTest.getId());
-		assertFalse(existsById);
+		// Tentando deletar com valor nulo
+		{
+			try {
+				getRepository().deleteById(null);
+				fail();
+			} catch (InvalidDataAccessApiUsageException e) {
+				assertTrue(true);
+			} catch (Exception e) {
+				fail(e.getMessage());
+			}
+		}
 
 		// Testando com id que não existe na base de dados
-		try {
-			this.crudRepository.deleteById(this.classEntityForTest.getId());
-			fail();
-		} catch (EmptyResultDataAccessException e) {
-			assertTrue(true);
-		} catch (Exception e) {
-			fail(e.getMessage());
+		{
+			try {
+				getRepository().deleteById(getIDNaoExiste());
+				fail();
+			} catch (EmptyResultDataAccessException e) {
+				assertTrue(true);
+			} catch (Exception e) {
+				fail(e.getMessage());
+			}
+		}
+
+		// Testando com id que existe
+		{
+			Iterable<T> iterable = getRepository().saveAll(listEntity());
+			ID id = (castClassEntity(iterable.iterator().next())).getId();
+
+			getRepository().deleteById(id);
+
+			boolean existsById = getRepository().existsById(id);
+
+			assertFalse(existsById);
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	@Test
-	@Override
 	public void testDelete() {
 		System.out.println("::: CrudRepositoryTest.testDelete() :::");
-		this.crudRepository.delete((T) this.classEntityForTest);
 
-		// testando com id que não existe
-		boolean existsById = this.crudRepository.existsById(this.classEntityForTest.getId());
-		assertFalse(existsById);
+		// Tentando deletar com valor nulo
+		{
+			try {
+				getRepository().delete(null);
+				fail();
+			} catch (InvalidDataAccessApiUsageException e) {
+				assertTrue(true);
+			} catch (Exception e) {
+				fail(e.getMessage());
+			}
+		}
+
+		// Populando a tabela
+		Iterable<T> iterable = getRepository().saveAll(listEntity());
+		T objeto = iterable.iterator().next();
+
+		// Deletando o objeto que existe
+		{
+			getRepository().delete(objeto);
+			boolean existsById = getRepository().existsById((castClassEntity(objeto)).getId());
+			assertFalse(existsById);
+		}
+
+		// Testando com objeto recem deletado
+		getRepository().delete(objeto);
 
 		// testando com o objeto sem id
-		this.crudRepository.delete(entityNoId());
+		getRepository().delete(entityNoId());
+
 		assertTrue(true);
 	}
 
 	@Test
-	@Override
 	public void testDeleteAll() {
 		System.out.println("::: CrudRepositoryTest.testDeleteAll() :::");
-		boolean existsById = this.crudRepository.existsById(this.classEntityForTest.getId());
+
+		// Populando tabelas
+		Iterable<T> iterable = getRepository().saveAll(listEntity());
+		ID id = castClassEntity(iterable.iterator().next()).getId();
+
+		// Verifica primeiramente se existe o objeto na tabela
+		boolean existsById = getRepository().existsById(id);
 		assertTrue(existsById);
-		this.crudRepository.deleteAll();
-		existsById = this.crudRepository.existsById(this.classEntityForTest.getId());
+
+		// Deletando todos os dados da tabela
+		getRepository().deleteAll();
+
+		// Verifica se existe o objeto na tabela após o deleteAll
+		existsById = getRepository().existsById(id);
 		assertFalse(existsById);
 	}
 	// :::... FIM - TESTES UNITARIOS ...:::
 
 	@SuppressWarnings("unchecked")
-	private ClassEntity<ID> castClassEntity(T t) {
+	@Override
+	public ClassEntity<ID> castClassEntity(T t) {
 		return (ClassEntity<ID>) t;
-	}
-
-	@SuppressWarnings("unchecked")
-	private List<ClassEntity<ID>> castListClassEntity(Iterable<T> iterable) {
-		return (List<ClassEntity<ID>>) iterable;
-	}
-
-	protected abstract T entity();
-
-	protected abstract T entityNoId();
-
-	protected abstract T entityOnlyInstanced();
-
-	protected abstract List<T> listEntity();
-
-	protected abstract List<T> listEntitySaveAll();
-
-	protected abstract ID getNotExistFindById();
-
-	@Before
-	public void setUp() {
-		System.out.println("::: setUp() :::");
-		List<T> listEntity = listEntity();
-		count = listEntity.size();
-		List<ClassEntity<ID>> list = castListClassEntity(this.crudRepository.saveAll(listEntity));
-
-		this.classEntityForTest = list.get(0);
 	}
 
 	@After
 	public void tearDown() {
 		System.out.println("::: tearDown() :::");
-		this.crudRepository.deleteAll();
+		getRepository().deleteAll();
 	}
 
 }

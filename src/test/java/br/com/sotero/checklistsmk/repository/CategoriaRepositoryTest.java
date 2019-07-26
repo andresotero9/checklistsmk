@@ -8,18 +8,29 @@ import java.util.List;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import br.com.sotero.checklistsmk.data.CategoriaData;
 import br.com.sotero.checklistsmk.model.Categoria;
+import br.com.sotero.checklistsmk.model.ClassEntity;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
 @ActiveProfiles("test")
 public class CategoriaRepositoryTest extends CrudRepositoryTest<Categoria, Long> {
+
+	@Autowired
+	private CategoriaRepository categoriaRepository;
+
+	@Override
+	protected CrudRepository<Categoria, Long> getRepository() {
+		return categoriaRepository;
+	}
 
 	@Override
 	public Categoria entity() {
@@ -48,20 +59,15 @@ public class CategoriaRepositoryTest extends CrudRepositoryTest<Categoria, Long>
 		return listCategoria;
 	}
 
-	@Override
-	public List<Categoria> listEntitySaveAll() {
-		List<Categoria> listCategoria = new ArrayList<>();
-		listCategoria.add(new Categoria("Automotivo"));
-		listCategoria.add(new Categoria("Eletrônicos"));
-		listCategoria.add(new Categoria("Eletrodomésticos"));
-		return listCategoria;
-	}
-
 	@Test
 	public void testSaveNmeCategoriaUnique() {
 		System.out.println("::: testSaveNmeCategoriaUnique() :::");
+		
+		// Populando a tabela
+		this.categoriaRepository.saveAll(listEntity());
+		
 		try {
-			crudRepository.save(new Categoria("Bebidas"));
+			this.categoriaRepository.save(new Categoria("Bebidas"));
 			fail();
 		} catch (DataIntegrityViolationException e) {
 			assertTrue(true);
@@ -71,8 +77,26 @@ public class CategoriaRepositoryTest extends CrudRepositoryTest<Categoria, Long>
 	}
 
 	@Override
-	public Long getNotExistFindById() {
+	public Long getIDNaoExiste() {
 		return 9999L;
+	}
+
+	@Override
+	public Long getIDZerado() {
+		return 0L;
+	}
+
+	@Override
+	public void alteracaoNaEntidadeParaUpdate(ClassEntity<Long> entity) {
+		Categoria categoria = (Categoria) entity;
+		categoria.setNmeCategoria(categoria.getNmeCategoria() + " update");
+	}
+
+	@Override
+	public void alteracaoNasEntidadesParaUpdate(List<ClassEntity<Long>> listEntity) {
+		for (ClassEntity<Long> entity : listEntity) {
+			this.alteracaoNaEntidadeParaUpdate(entity);
+		}
 	}
 
 }

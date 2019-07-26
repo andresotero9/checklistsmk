@@ -14,6 +14,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 import br.com.sotero.checklistsmk.data.CategoriaData;
 import br.com.sotero.checklistsmk.data.ItemData;
 import br.com.sotero.checklistsmk.model.Categoria;
+import br.com.sotero.checklistsmk.model.ClassEntity;
 import br.com.sotero.checklistsmk.model.Item;
 
 @RunWith(SpringRunner.class)
@@ -22,48 +23,43 @@ import br.com.sotero.checklistsmk.model.Item;
 public class ItemRepositoryTest extends CrudRepositoryTest<Item, Long> {
 
 	@Autowired
-	private CrudRepository<Categoria, Long> categoriaCrudRepository;
+	private ItemRepository itemRepository;
+
+	@Autowired
+	private CategoriaRepository categoriaRepository;
 
 	@Override
-	protected Item entity() {
+	public Item entity() {
 		Item item = ItemData.getItem();
-		Categoria categoria = categoriaCrudRepository.save(CategoriaData.getCategoriaNoId("Alimentos"));
+		Categoria categoria = categoriaRepository.save(CategoriaData.getCategoriaNoId("Alimentos"));
 		item.setCategoria(categoria);
 		return item;
 	}
 
 	@Override
-	protected Item entityNoId() {
+	public Item entityNoId() {
 		return ItemData.getItem();
 	}
 
 	@Override
-	protected Item entityOnlyInstanced() {
+	public Item entityOnlyInstanced() {
 		return new Item();
 	}
 
 	@Override
-	protected List<Item> listEntity() {
-		Categoria categoria = categoriaCrudRepository.save(CategoriaData.getCategoriaNoId("Bebidas"));
+	public List<Item> listEntity() {
+		Categoria categoria = categoriaRepository.save(CategoriaData.getCategoriaNoId("Bebidas"));
 
 		List<Item> itens = new ArrayList<Item>();
 		itens.add(new Item("Refrigerante", categoria));
+		itens.add(new Item("Cerveja", categoria));
+		itens.add(new Item("Suco", categoria));
 
 		return itens;
 	}
 
 	@Override
-	protected List<Item> listEntitySaveAll() {
-		Categoria categoria = categoriaCrudRepository.save(CategoriaData.getCategoriaNoId("Bazar"));
-		List<Item> itens = new ArrayList<Item>();
-		itens.add(new Item("Toalha", categoria));
-		itens.add(new Item("Fronha", categoria));
-		itens.add(new Item("Roupa de cama", categoria));
-		return itens;
-	}
-
-	@Override
-	protected Long getNotExistFindById() {
+	public Long getIDNaoExiste() {
 		return 9999L;
 	}
 
@@ -71,6 +67,29 @@ public class ItemRepositoryTest extends CrudRepositoryTest<Item, Long> {
 	public void tearDown() {
 		System.out.println("::: ItemRepositoryTest.tearDown() :::");
 		super.tearDown();
-		this.categoriaCrudRepository.deleteAll();
+		this.categoriaRepository.deleteAll();
+	}
+
+	@Override
+	public Long getIDZerado() {
+		return 0L;
+	}
+
+	@Override
+	public void alteracaoNaEntidadeParaUpdate(ClassEntity<Long> entity) {
+		Item item = (Item) entity;
+		item.setNmeItem(item.getNmeItem() + "update");
+	}
+
+	@Override
+	public void alteracaoNasEntidadesParaUpdate(List<ClassEntity<Long>> listEntity) {
+		for (ClassEntity<Long> entity : listEntity) {
+			this.alteracaoNaEntidadeParaUpdate(entity);
+		}
+	}
+
+	@Override
+	protected CrudRepository<Item, Long> getRepository() {
+		return itemRepository;
 	}
 }

@@ -1,10 +1,9 @@
 package br.com.sotero.checklistsmk.service;
 
-import java.util.Optional;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Service;
 
 import br.com.sotero.checklistsmk.model.Categoria;
@@ -13,77 +12,20 @@ import br.com.sotero.checklistsmk.repository.CategoriaRepository;
 //@RestController
 //@RequestMapping("/service")
 @Service
-public class CategoriaService implements ICrudService<Categoria, Long> {
+public class CategoriaService extends CrudService<Categoria, Long> {
 
 	private static final Logger log = LoggerFactory.getLogger(CategoriaService.class);
 
 	@Autowired
 	private CategoriaRepository categoriaRepository;
 
-	@Override
-	public Optional<Categoria> findById(Long id) {
-		log.info("Buscando Categoria por ID: {}", id);
-		return categoriaRepository.findById(id);
+	public Logger getLog() {
+		return log;
 	}
 
 	@Override
-	public Categoria save(Categoria entity) {
-		log.info("Salvando Categoria: {}", entity);
-		return categoriaRepository.save(entity);
-	}
-
-	@Override
-	public Iterable<Categoria> saveAll(Iterable<Categoria> entities) {
-		log.info("Salvando Categorias : {}", entities);
-		return categoriaRepository.saveAll(entities);
-	}
-
-	@Override
-	public boolean existsById(Long id) {
-		log.info("Verificando se existe Categoria por ID: {}", id);
-		return categoriaRepository.existsById(id);
-	}
-
-	@Override
-	public Iterable<Categoria> findAll() {
-		log.info("Buscando todas as Categorias");
-		return categoriaRepository.findAll();
-	}
-
-	@Override
-	public Iterable<Categoria> findAllById(Iterable<Long> ids) {
-		log.info("Buscando todas as Categorias por IDs: {}", ids);
-		return categoriaRepository.findAllById(ids);
-	}
-
-	@Override
-	public long count() {
-		log.info("Contando a quantidade de Categorias");
-		return categoriaRepository.count();
-	}
-
-	@Override
-	public void deleteById(Long id) {
-		log.info("Deletando Categoria por ID: {}", id);
-		categoriaRepository.deleteById(id);
-	}
-
-	@Override
-	public void delete(Categoria entity) {
-		log.info("Deletando Categoria selecionada: {}", entity);
-		categoriaRepository.delete(entity);
-	}
-
-	@Override
-	public void deleteAll(Iterable<Categoria> entities) {
-		log.info("Deletando todas as Categorias selecionadas: {}", entities);
-		categoriaRepository.deleteAll(entities);
-	}
-
-	@Override
-	public void deleteAll() {
-		log.info("Deletando todas as Categorias");
-		categoriaRepository.deleteAll();
+	public CrudRepository<Categoria, Long> getRepository() {
+		return categoriaRepository;
 	}
 
 //	/**
