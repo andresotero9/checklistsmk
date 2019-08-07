@@ -3,8 +3,8 @@ package br.com.sotero.checklistsmk.service;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.After;
 import org.junit.runner.RunWith;
@@ -38,14 +38,21 @@ public class ItemServiceTest extends CrudServiceTest<Item, Long> {
 	@Override
 	public Item entity() {
 		Item item = ItemData.getItem();
+		Categoria categoria = null;
+
 		try {
-			Categoria categoria = findByName(categoriaService.findAll(), "Alimentos");
+			Optional<Categoria> optCategoria = this.categoriaService.findByNmeCategoria("Alimentos");
 
-			item.setCategoria(categoria);
-
+			if (optCategoria.isPresent()) {
+				categoria = optCategoria.get();
+			} else {
+				categoria = this.categoriaService.save(CategoriaData.getCategoriaNoId("Alimentos"));
+			}
 		} catch (BusinessException e) {
 			fail(e.getMessage());
 		}
+
+		item.setCategoria(categoria);
 		return item;
 	}
 
@@ -58,7 +65,13 @@ public class ItemServiceTest extends CrudServiceTest<Item, Long> {
 	public List<Item> listEntity() {
 		Categoria categoria = null;
 		try {
-			categoria = findByName(categoriaService.findAll(), "Bebidas");
+			Optional<Categoria> optCategoria = this.categoriaService.findByNmeCategoria("Bebidas");
+
+			if (optCategoria.isPresent()) {
+				categoria = optCategoria.get();
+			} else {
+				categoria = categoriaService.save(CategoriaData.getCategoriaNoId("Bebidas"));
+			}
 
 		} catch (BusinessException e) {
 			fail(e.getMessage());
@@ -104,17 +117,4 @@ public class ItemServiceTest extends CrudServiceTest<Item, Long> {
 		}
 	}
 
-	private Categoria findByName(Iterable<Categoria> findAll, String nme) throws BusinessException {
-		Iterator<Categoria> iterator = findAll.iterator();
-
-		while (iterator.hasNext()) {
-			Categoria categoria = iterator.next();
-			if (nme.equals(categoria.getNmeCategoria())) {
-				return categoria;
-			}
-		}
-
-		return categoriaService.save(CategoriaData.getCategoriaNoId(nme));
-
-	}
 }

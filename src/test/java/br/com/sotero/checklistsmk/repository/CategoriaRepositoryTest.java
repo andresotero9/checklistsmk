@@ -1,10 +1,12 @@
 package br.com.sotero.checklistsmk.repository;
 
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -58,23 +60,6 @@ public class CategoriaRepositoryTest extends CrudRepositoryTest<Categoria, Long>
 		return listCategoria;
 	}
 
-	@Test
-	public void testSaveNmeCategoriaUnique() {
-		System.out.println("::: testSaveNmeCategoriaUnique() :::");
-
-		// Populando a tabela
-		this.categoriaRepository.saveAll(listEntity());
-
-		try {
-			this.categoriaRepository.save(new Categoria("Bebidas"));
-			fail();
-		} catch (DataIntegrityViolationException e) {
-			assertTrue(true);
-		} catch (Exception e) {
-			fail();
-		}
-	}
-
 	@Override
 	public Long getIDNaoExiste() {
 		return 9999L;
@@ -88,5 +73,48 @@ public class CategoriaRepositoryTest extends CrudRepositoryTest<Categoria, Long>
 	@Override
 	public void alteracaoNaEntidadeParaUpdate(Categoria t) {
 		t.setNmeCategoria(t.getNmeCategoria() + " update");
+	}
+
+	@Test
+	public void testSaveNmeCategoriaUnique() {
+		System.out.println("::: CategoriaRepositoryTest.testSaveNmeCategoriaUnique() :::");
+
+		// Populando a tabela
+		this.categoriaRepository.saveAll(listEntity());
+
+		try {
+			this.categoriaRepository.save(new Categoria("Bebidas"));
+			fail();
+		} catch (DataIntegrityViolationException e) {
+			assertTrue(true);
+		} catch (Exception e) {
+			fail(e.getMessage());
+		}
+	}
+
+	@Test
+	public void testFindByNmeCategoria() {
+		System.out.println("::: CategoriaRepositoryTest.testFindByNmeCategoria() :::");
+
+		// Testando passando o parametro nulo
+		{
+			Optional<Categoria> categoria = this.categoriaRepository.findByNmeCategoria(null);
+			assertFalse(categoria.isPresent());
+		}
+		
+		// Testando passando uma categoria que não existe
+		{
+			Optional<Categoria> categoria = this.categoriaRepository.findByNmeCategoria("Categoria que não existe");
+			assertFalse(categoria.isPresent());
+		}
+
+		this.categoriaRepository.saveAll(listEntity());
+		
+		// Testando passando uma categoria que existe
+		{
+			Optional<Categoria> categoria = this.categoriaRepository.findByNmeCategoria("Limpeza");
+			assertTrue(categoria.isPresent());
+		}
+		
 	}
 }

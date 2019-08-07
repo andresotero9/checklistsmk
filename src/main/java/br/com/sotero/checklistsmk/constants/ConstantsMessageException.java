@@ -3,6 +3,7 @@ package br.com.sotero.checklistsmk.constants;
 public class ConstantsMessageException {
 	public static final String MSG_FALHA_NO_BANCO_DE_DADOS = "Falha no banco de dados.";
 	public static final String MSG_FALHA_PARAMETRO_NULO = "Parametro nulo.";
+	public static final String MSG_FALHA_PARAMETRO_STRING_VAZIA = "Parametro vazio";
 	public static final String MSG_FALHA_AO_SALVAR_O_REGISTRO = "Falha ao salvar o objeto.";
 	public static final String MSG_FALHA_AO_PROCURAR_O_REGISTRO = "Falha ao procurar o objeto.";
 	public static final String MSG_FALHA_AO_PROCURAR_REGISTROS_POR_IDS = "Falha ao procurar registros por IDs.";

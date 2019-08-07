@@ -1,11 +1,15 @@
 package br.com.sotero.checklistsmk.service;
 
+import java.util.Optional;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.stereotype.Service;
 
+import br.com.sotero.checklistsmk.constants.ConstantsMessageException;
+import br.com.sotero.checklistsmk.exception.BusinessException;
 import br.com.sotero.checklistsmk.model.Categoria;
 import br.com.sotero.checklistsmk.repository.CategoriaRepository;
 
@@ -26,6 +30,24 @@ public class CategoriaService extends CrudService<Categoria, Long> {
 	@Override
 	public CrudRepository<Categoria, Long> getRepository() {
 		return categoriaRepository;
+	}
+	
+	public Optional<Categoria> findByNmeCategoria(String nmeCategoria) throws BusinessException{
+		if(nmeCategoria == null) {
+			throw new BusinessException(ConstantsMessageException.MSG_FALHA_PARAMETRO_NULO);
+		}else if("".equals(nmeCategoria.trim())) {
+			throw new BusinessException(ConstantsMessageException.MSG_FALHA_PARAMETRO_STRING_VAZIA);
+		}
+		
+		Optional<Categoria> categoria = Optional.empty();
+		
+		try {
+			categoria = this.categoriaRepository.findByNmeCategoria(nmeCategoria);
+		} catch (Exception e) {
+			throw new BusinessException(ConstantsMessageException.MSG_FALHA_AO_PROCURAR_O_REGISTRO, e);
+		}
+		
+		return categoria;
 	}
 
 //	/**
