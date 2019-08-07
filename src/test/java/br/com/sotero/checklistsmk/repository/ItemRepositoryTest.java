@@ -14,7 +14,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 import br.com.sotero.checklistsmk.data.CategoriaData;
 import br.com.sotero.checklistsmk.data.ItemData;
 import br.com.sotero.checklistsmk.model.Categoria;
-import br.com.sotero.checklistsmk.model.ClassEntity;
 import br.com.sotero.checklistsmk.model.Item;
 
 @RunWith(SpringRunner.class)
@@ -76,16 +75,8 @@ public class ItemRepositoryTest extends CrudRepositoryTest<Item, Long> {
 	}
 
 	@Override
-	public void alteracaoNaEntidadeParaUpdate(ClassEntity<Long> entity) {
-		Item item = (Item) entity;
-		item.setNmeItem(item.getNmeItem() + "update");
-	}
-
-	@Override
-	public void alteracaoNasEntidadesParaUpdate(List<ClassEntity<Long>> listEntity) {
-		for (ClassEntity<Long> entity : listEntity) {
-			this.alteracaoNaEntidadeParaUpdate(entity);
-		}
+	public void alteracaoNaEntidadeParaUpdate(Item t) {
+		t.setNmeItem(t.getNmeItem() + "update");
 	}
 
 	@Override

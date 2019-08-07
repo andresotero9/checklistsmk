@@ -17,7 +17,6 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import br.com.sotero.checklistsmk.data.CategoriaData;
 import br.com.sotero.checklistsmk.model.Categoria;
-import br.com.sotero.checklistsmk.model.ClassEntity;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest
@@ -62,10 +61,10 @@ public class CategoriaRepositoryTest extends CrudRepositoryTest<Categoria, Long>
 	@Test
 	public void testSaveNmeCategoriaUnique() {
 		System.out.println("::: testSaveNmeCategoriaUnique() :::");
-		
+
 		// Populando a tabela
 		this.categoriaRepository.saveAll(listEntity());
-		
+
 		try {
 			this.categoriaRepository.save(new Categoria("Bebidas"));
 			fail();
@@ -87,16 +86,7 @@ public class CategoriaRepositoryTest extends CrudRepositoryTest<Categoria, Long>
 	}
 
 	@Override
-	public void alteracaoNaEntidadeParaUpdate(ClassEntity<Long> entity) {
-		Categoria categoria = (Categoria) entity;
-		categoria.setNmeCategoria(categoria.getNmeCategoria() + " update");
+	public void alteracaoNaEntidadeParaUpdate(Categoria t) {
+		t.setNmeCategoria(t.getNmeCategoria() + " update");
 	}
-
-	@Override
-	public void alteracaoNasEntidadesParaUpdate(List<ClassEntity<Long>> listEntity) {
-		for (ClassEntity<Long> entity : listEntity) {
-			this.alteracaoNaEntidadeParaUpdate(entity);
-		}
-	}
-
 }

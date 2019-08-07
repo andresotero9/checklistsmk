@@ -20,7 +20,7 @@ public class Item extends ClassEntity<Long> {
 	@Column(name = "ID_ITEM")
 	private Long idItem;
 
-	@Column(name = "NME_ITEM", nullable = false, unique = false, length = 50)
+	@Column(name = "NME_ITEM", nullable = false, unique = true, length = 50)
 	private String nmeItem;
 
 	@ManyToOne

@@ -6,6 +6,7 @@ public class ItemData {
 	public static Item getItem() {
 		Item item = new Item();
 		item.setNmeItem("Macarrão");
+		item.setId(999L);
 		return item;
 	}
 }

@@ -6,6 +6,7 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Consumer;
@@ -24,9 +25,10 @@ public abstract class CrudRepositoryTest<T, ID> implements ICrudCommonTest<T, ID
 
 	protected abstract CrudRepository<T, ID> getRepository();
 
+	protected abstract T entityNoId();
+
 	// :::... INICIO - TESTES UNITARIOS ...:::
 	@Test
-	@SuppressWarnings("unchecked")
 	public void testSave() {
 		System.out.println("::: CrudRepositoryTest.testSave() :::");
 
@@ -57,8 +59,8 @@ public abstract class CrudRepositoryTest<T, ID> implements ICrudCommonTest<T, ID
 		// Teste objeto real
 		{
 			// Persistindo objeto
-			ClassEntity<ID> result = castClassEntity(getRepository().save(entity()));
-			assertTrue(result.getId() != null);
+			T result = getRepository().save(entity());
+			assertTrue(castClassEntity(result).getId() != null);
 
 			// Tentando persistir objeto que já existe
 			try {
@@ -72,32 +74,26 @@ public abstract class CrudRepositoryTest<T, ID> implements ICrudCommonTest<T, ID
 
 			// Update no objeto
 			alteracaoNaEntidadeParaUpdate(result);
-			ClassEntity<ID> result2 = castClassEntity(getRepository().save((T) result));
-			assertEquals(result.getId(), result2.getId());
+			T result2 = getRepository().save(result);
+			assertEquals(castClassEntity(result).getId(), castClassEntity(result2).getId());
 		}
 	}
 
 	@Test
-	@SuppressWarnings("unchecked")
 	public void testSaveAll() {
 		System.out.println("::: CrudRepositoryTest.testSaveAll() :::");
 
 		// Persistir lista de objetos
-		List<T> listEntitySaveAll = listEntity();
-		Iterable<T> result = getRepository().saveAll(listEntitySaveAll);
+		Iterable<T> result = getRepository().saveAll(listEntity());
 
-		List<ClassEntity<ID>> listResult = (List<ClassEntity<ID>>) result;
-
-		assertTrue(listResult.size() == listEntitySaveAll.size());
+		assertTrue(result.iterator().hasNext());
 
 		// Persistir lista de objetos alterados (update)
-		alteracaoNasEntidadesParaUpdate(listResult);
+		alteracaoNasEntidadesParaUpdate(result);
 
 		Iterable<T> result2 = getRepository().saveAll(result);
 
-		List<ClassEntity<ID>> listResult2 = (List<ClassEntity<ID>>) result2;
-
-		assertEquals(listResult.size(), listResult2.size());
+		assertTrue(result2.iterator().hasNext());
 	}
 
 	@Test
@@ -341,16 +337,28 @@ public abstract class CrudRepositoryTest<T, ID> implements ICrudCommonTest<T, ID
 	}
 	// :::... FIM - TESTES UNITARIOS ...:::
 
+	// :::... INICIO - OVERRIDE ...:::
 	@SuppressWarnings("unchecked")
 	@Override
 	public ClassEntity<ID> castClassEntity(T t) {
 		return (ClassEntity<ID>) t;
 	}
 
+	@Override
+	public void alteracaoNasEntidadesParaUpdate(Iterable<T> result) {
+		Iterator<T> iterator = result.iterator();
+
+		while (iterator.hasNext()) {
+			alteracaoNaEntidadeParaUpdate(iterator.next());
+		}
+	}
+	// :::... FIM - OVERRIDE ...:::
+
+	// :::... INICIO - setUp() / tearDown() ...:::
 	@After
 	public void tearDown() {
 		System.out.println("::: tearDown() :::");
 		getRepository().deleteAll();
 	}
-
+	// :::... FIM - setUp() / tearDown() ...:::
 }

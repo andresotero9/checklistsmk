@@ -2,7 +2,6 @@ package br.com.sotero.checklistsmk;
 
 import java.util.List;
 
-import br.com.sotero.checklistsmk.exception.BusinessException;
 import br.com.sotero.checklistsmk.model.ClassEntity;
 
 public interface ICrudCommonTest<T, ID> {
@@ -12,7 +11,7 @@ public interface ICrudCommonTest<T, ID> {
 
 	void testSaveAll();
 
-	void testFindById() throws BusinessException;
+	void testFindById();
 
 	void testExistsById();
 
@@ -27,11 +26,14 @@ public interface ICrudCommonTest<T, ID> {
 	void testDelete();
 
 	void testDeleteAll();
+
+	void alteracaoNaEntidadeParaUpdate(T t);
+
+	void alteracaoNasEntidadesParaUpdate(Iterable<T> result);
+
 	// :::... FIM - TESTES UNITARIOS ...:::
 
 	T entity();
-
-	T entityNoId();
 
 	T entityOnlyInstanced();
 
@@ -42,9 +44,5 @@ public interface ICrudCommonTest<T, ID> {
 	ID getIDZerado();
 
 	ClassEntity<ID> castClassEntity(T t);
-
-	void alteracaoNaEntidadeParaUpdate(ClassEntity<ID> entity);
-
-	void alteracaoNasEntidadesParaUpdate(List<ClassEntity<ID>> listEntity);
 
 }
