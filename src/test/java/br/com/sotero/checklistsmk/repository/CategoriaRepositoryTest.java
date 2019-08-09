@@ -10,6 +10,8 @@ import java.util.Optional;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.dao.DataIntegrityViolationException;
@@ -24,6 +26,8 @@ import br.com.sotero.checklistsmk.model.Categoria;
 @SpringBootTest
 @ActiveProfiles("test")
 public class CategoriaRepositoryTest extends CrudRepositoryTest<Categoria, Long> {
+
+	private static final Logger log = LoggerFactory.getLogger(CategoriaRepositoryTest.class);
 
 	@Autowired
 	private CategoriaRepository categoriaRepository;
@@ -77,7 +81,7 @@ public class CategoriaRepositoryTest extends CrudRepositoryTest<Categoria, Long>
 
 	@Test
 	public void testSaveNmeCategoriaUnique() {
-		System.out.println("::: CategoriaRepositoryTest.testSaveNmeCategoriaUnique() :::");
+		getLog().info("testSaveNmeCategoriaUnique()");
 
 		// Populando a tabela
 		this.categoriaRepository.saveAll(listEntity());
@@ -94,14 +98,14 @@ public class CategoriaRepositoryTest extends CrudRepositoryTest<Categoria, Long>
 
 	@Test
 	public void testFindByNmeCategoria() {
-		System.out.println("::: CategoriaRepositoryTest.testFindByNmeCategoria() :::");
+		getLog().info("testFindByNmeCategoria()");
 
 		// Testando passando o parametro nulo
 		{
 			Optional<Categoria> categoria = this.categoriaRepository.findByNmeCategoria(null);
 			assertFalse(categoria.isPresent());
 		}
-		
+
 		// Testando passando uma categoria que não existe
 		{
 			Optional<Categoria> categoria = this.categoriaRepository.findByNmeCategoria("Categoria que não existe");
@@ -109,12 +113,17 @@ public class CategoriaRepositoryTest extends CrudRepositoryTest<Categoria, Long>
 		}
 
 		this.categoriaRepository.saveAll(listEntity());
-		
+
 		// Testando passando uma categoria que existe
 		{
 			Optional<Categoria> categoria = this.categoriaRepository.findByNmeCategoria("Limpeza");
 			assertTrue(categoria.isPresent());
 		}
-		
+
+	}
+
+	@Override
+	public Logger getLog() {
+		return log;
 	}
 }

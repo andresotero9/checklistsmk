@@ -30,7 +30,7 @@ public abstract class CrudRepositoryTest<T, ID> implements ICrudCommonTest<T, ID
 	// :::... INICIO - TESTES UNITARIOS ...:::
 	@Test
 	public void testSave() {
-		System.out.println("::: CrudRepositoryTest.testSave() :::");
+		getLog().info("testSave()");
 
 		// Teste somente objeto instanciado
 		{
@@ -81,7 +81,7 @@ public abstract class CrudRepositoryTest<T, ID> implements ICrudCommonTest<T, ID
 
 	@Test
 	public void testSaveAll() {
-		System.out.println("::: CrudRepositoryTest.testSaveAll() :::");
+		getLog().info("testSaveAll()");
 
 		// Persistir lista de objetos
 		Iterable<T> result = getRepository().saveAll(listEntity());
@@ -98,7 +98,7 @@ public abstract class CrudRepositoryTest<T, ID> implements ICrudCommonTest<T, ID
 
 	@Test
 	public void testFindById() {
-		System.out.println("::: CrudRepositoryTest.testFindById() :::");
+		getLog().info("testFindById()");
 
 		// Procurar objeto pelo qual não existe o ID
 		{
@@ -127,7 +127,7 @@ public abstract class CrudRepositoryTest<T, ID> implements ICrudCommonTest<T, ID
 
 	@Test
 	public void testExistsById() {
-		System.out.println("::: CrudRepositoryTest.testExistsById() :::");
+		getLog().info("testExistsById()");
 
 		// Before test
 		Iterable<T> saveAll = getRepository().saveAll(listEntity());
@@ -151,7 +151,7 @@ public abstract class CrudRepositoryTest<T, ID> implements ICrudCommonTest<T, ID
 
 	@Test
 	public void testFindAll() {
-		System.out.println("::: CrudRepositoryTest.testFindAll() :::");
+		getLog().info("testFindAll()");
 
 		{
 			Iterable<T> result = getRepository().findAll();
@@ -170,7 +170,7 @@ public abstract class CrudRepositoryTest<T, ID> implements ICrudCommonTest<T, ID
 	@Test
 	@SuppressWarnings("unchecked")
 	public void testFindAllById() {
-		System.out.println("::: CrudRepositoryTest.testFindAllById() :::");
+		getLog().info("testFindAllById()");
 
 		// Teste passando valor nulo
 		{
@@ -221,7 +221,7 @@ public abstract class CrudRepositoryTest<T, ID> implements ICrudCommonTest<T, ID
 	@Test
 	@SuppressWarnings("unchecked")
 	public void testCount() {
-		System.out.println("::: CrudRepositoryTest.testCount() :::");
+		getLog().info("testCount()");
 
 		// Contagem com a tabela vazia
 		{
@@ -241,7 +241,7 @@ public abstract class CrudRepositoryTest<T, ID> implements ICrudCommonTest<T, ID
 
 	@Test
 	public void testDeleteById() {
-		System.out.println("::: CrudRepositoryTest.testDeleteById() :::");
+		getLog().info("testDeleteById()");
 
 		// Tentando deletar com valor nulo
 		{
@@ -282,7 +282,7 @@ public abstract class CrudRepositoryTest<T, ID> implements ICrudCommonTest<T, ID
 
 	@Test
 	public void testDelete() {
-		System.out.println("::: CrudRepositoryTest.testDelete() :::");
+		getLog().info("testDelete()");
 
 		// Tentando deletar com valor nulo
 		{
@@ -318,7 +318,7 @@ public abstract class CrudRepositoryTest<T, ID> implements ICrudCommonTest<T, ID
 
 	@Test
 	public void testDeleteAll() {
-		System.out.println("::: CrudRepositoryTest.testDeleteAll() :::");
+		getLog().info("testDeleteAll()");
 
 		// Populando tabelas
 		Iterable<T> iterable = getRepository().saveAll(listEntity());
@@ -357,8 +357,9 @@ public abstract class CrudRepositoryTest<T, ID> implements ICrudCommonTest<T, ID
 	// :::... INICIO - setUp() / tearDown() ...:::
 	@After
 	public void tearDown() {
-		System.out.println("::: tearDown() :::");
+		getLog().info("tearDown()");
 		getRepository().deleteAll();
 	}
 	// :::... FIM - setUp() / tearDown() ...:::
+
 }

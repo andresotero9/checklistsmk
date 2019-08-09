@@ -5,6 +5,8 @@ import java.util.List;
 
 import org.junit.After;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.repository.CrudRepository;
@@ -20,6 +22,8 @@ import br.com.sotero.checklistsmk.model.Item;
 @SpringBootTest
 @ActiveProfiles("test")
 public class ItemRepositoryTest extends CrudRepositoryTest<Item, Long> {
+
+	private static final Logger log = LoggerFactory.getLogger(ItemRepositoryTest.class);
 
 	@Autowired
 	private ItemRepository itemRepository;
@@ -64,7 +68,7 @@ public class ItemRepositoryTest extends CrudRepositoryTest<Item, Long> {
 
 	@After
 	public void tearDown() {
-		System.out.println("::: ItemRepositoryTest.tearDown() :::");
+		getLog().info("tearDown");
 		super.tearDown();
 		this.categoriaRepository.deleteAll();
 	}
@@ -82,5 +86,10 @@ public class ItemRepositoryTest extends CrudRepositoryTest<Item, Long> {
 	@Override
 	protected CrudRepository<Item, Long> getRepository() {
 		return itemRepository;
+	}
+
+	@Override
+	public Logger getLog() {
+		return log;
 	}
 }

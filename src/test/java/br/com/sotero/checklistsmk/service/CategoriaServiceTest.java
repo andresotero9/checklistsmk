@@ -13,6 +13,8 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
@@ -27,6 +29,8 @@ import br.com.sotero.checklistsmk.model.Categoria;
 @SpringBootTest
 @ActiveProfiles("test")
 public class CategoriaServiceTest extends CrudServiceTest<Categoria, Long> {
+
+	private static final Logger log = LoggerFactory.getLogger(CategoriaServiceTest.class);
 
 	@Autowired
 	private CategoriaService categoriaService;
@@ -45,6 +49,7 @@ public class CategoriaServiceTest extends CrudServiceTest<Categoria, Long> {
 	@After
 	public void tearDown() {
 		System.out.println("::: tearDown() :::");
+
 		try {
 			getService().deleteAll();
 		} catch (Exception e) {
@@ -92,7 +97,7 @@ public class CategoriaServiceTest extends CrudServiceTest<Categoria, Long> {
 
 	@Test
 	public void testFindByNmeCategoria() {
-		System.out.println("::: CategoriaServiceTest.testFindByNmeCategoria() :::");
+		log.info("testFindByNmeCategoria()");
 
 		// Testando passando o parametro nulo
 		{
@@ -131,5 +136,10 @@ public class CategoriaServiceTest extends CrudServiceTest<Categoria, Long> {
 			}
 		}
 
+	}
+
+	@Override
+	public Logger getLog() {
+		return log;
 	}
 }

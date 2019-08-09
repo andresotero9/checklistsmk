@@ -13,8 +13,6 @@ import br.com.sotero.checklistsmk.exception.BusinessException;
 import br.com.sotero.checklistsmk.model.Categoria;
 import br.com.sotero.checklistsmk.repository.CategoriaRepository;
 
-//@RestController
-//@RequestMapping("/service")
 @Service
 public class CategoriaService extends CrudService<Categoria, Long> {
 
@@ -31,22 +29,23 @@ public class CategoriaService extends CrudService<Categoria, Long> {
 	public CrudRepository<Categoria, Long> getRepository() {
 		return categoriaRepository;
 	}
-	
-	public Optional<Categoria> findByNmeCategoria(String nmeCategoria) throws BusinessException{
-		if(nmeCategoria == null) {
+
+	public Optional<Categoria> findByNmeCategoria(String nmeCategoria) throws BusinessException {
+		getLog().info("findByNmeCategoria({})", nmeCategoria);
+		if (nmeCategoria == null) {
 			throw new BusinessException(ConstantsMessageException.MSG_FALHA_PARAMETRO_NULO);
-		}else if("".equals(nmeCategoria.trim())) {
+		} else if ("".equals(nmeCategoria.trim())) {
 			throw new BusinessException(ConstantsMessageException.MSG_FALHA_PARAMETRO_STRING_VAZIA);
 		}
-		
+
 		Optional<Categoria> categoria = Optional.empty();
-		
+
 		try {
 			categoria = this.categoriaRepository.findByNmeCategoria(nmeCategoria);
 		} catch (Exception e) {
 			throw new BusinessException(ConstantsMessageException.MSG_FALHA_AO_PROCURAR_O_REGISTRO, e);
 		}
-		
+
 		return categoria;
 	}
 

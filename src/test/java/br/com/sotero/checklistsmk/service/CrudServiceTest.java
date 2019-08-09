@@ -27,7 +27,7 @@ public abstract class CrudServiceTest<T, ID> implements ICrudCommonTest<T, ID> {
 
 	@Test
 	public void testSave() {
-		System.out.println("::: CrudServiceTest.testSave() :::");
+		getLog().info("testSave()");
 
 		// Teste passando a entidade nula
 		{
@@ -84,7 +84,7 @@ public abstract class CrudServiceTest<T, ID> implements ICrudCommonTest<T, ID> {
 
 	@Test
 	public void testSaveAll() {
-		System.out.println("::: CrudServiceTest.testSaveAll() :::");
+		getLog().info("testSaveAll()");
 
 		// Testando lista nula
 		{
@@ -136,7 +136,7 @@ public abstract class CrudServiceTest<T, ID> implements ICrudCommonTest<T, ID> {
 
 	@Test
 	public void testFindById() {
-		System.out.println("::: CrudServiceTest.testFindById() :::");
+		getLog().info("testFindById()");
 
 		// Verifica objeto nulo
 		{
@@ -194,7 +194,7 @@ public abstract class CrudServiceTest<T, ID> implements ICrudCommonTest<T, ID> {
 
 	@Test
 	public void testExistsById() {
-		System.out.println("::: CrudServiceTest.testExistsById() :::");
+		getLog().info("testExistsById()");
 
 		Iterable<T> list = popularTabela();
 
@@ -215,7 +215,7 @@ public abstract class CrudServiceTest<T, ID> implements ICrudCommonTest<T, ID> {
 
 	@Test
 	public void testFindAll() {
-		System.out.println("::: CrudServiceTest.testFindAll() :::");
+		getLog().info("testFindAll()");
 
 		// Procurar tabela vazia
 		try {
@@ -237,7 +237,7 @@ public abstract class CrudServiceTest<T, ID> implements ICrudCommonTest<T, ID> {
 
 	@Test
 	public void testFindAllById() {
-		System.out.println("::: CrudServiceTest.testFindAllById() :::");
+		getLog().info("testFindAllById()");
 
 		// Teste passando valor nulo
 		try {
@@ -263,7 +263,7 @@ public abstract class CrudServiceTest<T, ID> implements ICrudCommonTest<T, ID> {
 
 	@Test
 	public void testCount() {
-		System.out.println("::: CrudServiceTest.testCount() :::");
+		getLog().info("testCount()");
 
 		try {
 			// Contagem de tabela vazia
@@ -281,7 +281,7 @@ public abstract class CrudServiceTest<T, ID> implements ICrudCommonTest<T, ID> {
 
 	@Test
 	public void testDeleteById() {
-		System.out.println("::: CrudServiceTest.testDeleteById() :::");
+		getLog().info("testDeleteById()");
 
 		// Teste parametro nulo
 		try {
@@ -318,7 +318,7 @@ public abstract class CrudServiceTest<T, ID> implements ICrudCommonTest<T, ID> {
 
 	@Test
 	public void testDelete() {
-		System.out.println("::: CrudServiceTest.testDelete() :::");
+		getLog().info("testDelete()");
 
 		// Teste parametro nulo
 		try {
@@ -364,7 +364,7 @@ public abstract class CrudServiceTest<T, ID> implements ICrudCommonTest<T, ID> {
 
 	@Test
 	public void testDeleteAll() {
-		System.out.println("::: CrudServiceTest.testDeleteAll() :::");
+		getLog().info("testDeleteAll()");
 
 		// Teste real
 		try {
@@ -440,4 +440,5 @@ public abstract class CrudServiceTest<T, ID> implements ICrudCommonTest<T, ID> {
 		return listIDs;
 
 	}
+
 }

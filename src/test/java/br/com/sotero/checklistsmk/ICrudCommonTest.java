@@ -2,6 +2,8 @@ package br.com.sotero.checklistsmk;
 
 import java.util.List;
 
+import org.slf4j.Logger;
+
 import br.com.sotero.checklistsmk.model.ClassEntity;
 
 public interface ICrudCommonTest<T, ID> {
@@ -45,4 +47,5 @@ public interface ICrudCommonTest<T, ID> {
 
 	ClassEntity<ID> castClassEntity(T t);
 
+	Logger getLog();
 }
