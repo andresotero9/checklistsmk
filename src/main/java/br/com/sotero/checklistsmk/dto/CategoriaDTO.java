@@ -4,7 +4,7 @@ import javax.validation.constraints.NotEmpty;
 
 import org.hibernate.validator.constraints.Length;
 
-public class CategoriaDTO {
+public class CategoriaDTO implements IDTO {
 
 	private Long idCategoria;
 	private String nmeCategoria;
