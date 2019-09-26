@@ -151,7 +151,7 @@ public abstract class Controller {
 	// ********************** FIM - REQUESTS **********************
 
 	@SuppressWarnings("rawtypes")
-	private List<ClassEntity> convertDtoToObject(List<IDTO> dtos) {
+	private List<ClassEntity> convertDtoToObject(List<IDTO> dtos) throws BusinessException {
 		List<ClassEntity> list = null;
 
 		if (dtos != null && dtos.size() > 0) {
@@ -165,9 +165,6 @@ public abstract class Controller {
 	}
 
 	@SuppressWarnings("rawtypes")
-	abstract ClassEntity convertDtoToObject(IDTO dto);
+	protected abstract ClassEntity convertDtoToObject(IDTO dto) throws BusinessException;
 
-//	findAllById(Iterable<ID>)
-//	delete(T)
-//	deleteAll(Iterable<? extends T>)
 }
